@@ -4,6 +4,13 @@ export default class KnowledgeEngine {
 
     importDocument(document) {
 
+        document.importedAt = document.importedAt || new Date();
+        document.lastUpdated = new Date();
+        document.aiProcessed = document.aiProcessed || false;
+        document.comparisonReady = document.comparisonReady || false;
+        document.knowledgeReady = document.knowledgeReady || false;
+        document.version = document.version || 1;
+
         Enterprise.knowledge.documents.push(document);
 
         return document;
@@ -13,6 +20,37 @@ export default class KnowledgeEngine {
     getDocuments() {
 
         return Enterprise.knowledge.documents;
+
+    }
+
+    getDocument(id) {
+
+        return Enterprise.knowledge.documents.find(
+            document => document.id === id
+        );
+
+    }
+
+    updateDocument(id, updates) {
+
+        const document = this.getDocument(id);
+
+        if (!document) return null;
+
+        Object.assign(document, updates);
+
+        document.lastUpdated = new Date();
+
+        return document;
+
+    }
+
+    removeDocument(id) {
+
+        Enterprise.knowledge.documents =
+            Enterprise.knowledge.documents.filter(
+                document => document.id !== id
+            );
 
     }
 
@@ -37,6 +75,24 @@ export default class KnowledgeEngine {
     addResearch(research) {
 
         Enterprise.knowledge.research.push(research);
+
+    }
+
+    getKnowledgeStatistics() {
+
+        return {
+
+            documents: Enterprise.knowledge.documents.length,
+
+            keywords: Enterprise.knowledge.keywords.length,
+
+            topics: Enterprise.knowledge.topics.length,
+
+            entities: Enterprise.knowledge.entities.length,
+
+            research: Enterprise.knowledge.research.length
+
+        };
 
     }
 
