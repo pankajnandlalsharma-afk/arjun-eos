@@ -1,17 +1,31 @@
 import Enterprise from "../models/Enterprise";
+import EnterpriseDatabase from "../database/EnterpriseDatabase";
 
 export default class KnowledgeEngine {
+
+    constructor() {
+
+        this.database = new EnterpriseDatabase();
+
+    }
 
     importDocument(document) {
 
         document.importedAt = document.importedAt || new Date();
+
         document.lastUpdated = new Date();
+
         document.aiProcessed = document.aiProcessed || false;
+
         document.comparisonReady = document.comparisonReady || false;
+
         document.knowledgeReady = document.knowledgeReady || false;
+
         document.version = document.version || 1;
 
         Enterprise.knowledge.documents.push(document);
+
+        this.database.addDocument(document);
 
         return document;
 
@@ -19,15 +33,13 @@ export default class KnowledgeEngine {
 
     getDocuments() {
 
-        return Enterprise.knowledge.documents;
+        return this.database.getDocuments();
 
     }
 
     getDocument(id) {
 
-        return Enterprise.knowledge.documents.find(
-            document => document.id === id
-        );
+        return this.database.getDocument(id);
 
     }
 
@@ -47,6 +59,8 @@ export default class KnowledgeEngine {
 
     removeDocument(id) {
 
+        this.database.removeDocument(id);
+
         Enterprise.knowledge.documents =
             Enterprise.knowledge.documents.filter(
                 document => document.id !== id
@@ -58,11 +72,15 @@ export default class KnowledgeEngine {
 
         Enterprise.knowledge.keywords.push(keyword);
 
+        this.database.keywords.push(keyword);
+
     }
 
     addTopic(topic) {
 
         Enterprise.knowledge.topics.push(topic);
+
+        this.database.topics.push(topic);
 
     }
 
@@ -70,11 +88,15 @@ export default class KnowledgeEngine {
 
         Enterprise.knowledge.entities.push(entity);
 
+        this.database.entities.push(entity);
+
     }
 
     addResearch(research) {
 
         Enterprise.knowledge.research.push(research);
+
+        this.database.research.push(research);
 
     }
 
@@ -82,21 +104,23 @@ export default class KnowledgeEngine {
 
         return {
 
-            documents: Enterprise.knowledge.documents.length,
+            documents: this.database.documents.length,
 
-            keywords: Enterprise.knowledge.keywords.length,
+            keywords: this.database.keywords.length,
 
-            topics: Enterprise.knowledge.topics.length,
+            topics: this.database.topics.length,
 
-            entities: Enterprise.knowledge.entities.length,
+            entities: this.database.entities.length,
 
-            research: Enterprise.knowledge.research.length
+            research: this.database.research.length
 
         };
 
     }
 
     clearKnowledge() {
+
+        this.database.clear();
 
         Enterprise.knowledge.documents = [];
 

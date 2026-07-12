@@ -1,21 +1,83 @@
-const EnterpriseDatabase = {
+export default class EnterpriseDatabase {
 
-    knowledge: [],
+    constructor() {
 
-    research: [],
+        this.documents = [];
 
-    contentPlans: [],
+        this.keywords = [];
 
-    production: [],
+        this.topics = [];
 
-    published: [],
+        this.entities = [];
 
-    analytics: [],
+        this.research = [];
 
-    segments: [],
+        this.comparisons = [];
 
-    channels: []
+        this.summaries = [];
 
-};
+        this.trainingModules = [];
 
-export default EnterpriseDatabase;
+        this.quizzes = [];
+
+        this.faqs = [];
+
+    }
+
+    addDocument(document) {
+
+        this.documents.push(document);
+
+    }
+
+    getDocuments() {
+
+        return this.documents;
+
+    }
+
+    getDocument(id) {
+
+        return this.documents.find(
+
+            document => document.id === id
+
+        );
+
+    }
+
+    removeDocument(id) {
+
+        this.documents = this.documents.filter(
+
+            document => document.id !== id
+
+        );
+
+    }
+
+    clear() {
+
+        this.documents = [];
+
+        this.keywords = [];
+
+        this.topics = [];
+
+        this.entities = [];
+
+        this.research = [];
+
+        this.comparisons = [];
+
+        this.summaries = [];
+
+        this.trainingModules = [];
+
+        this.quizzes = [];
+
+        this.faqs = [];
+
+    }
+
+}
