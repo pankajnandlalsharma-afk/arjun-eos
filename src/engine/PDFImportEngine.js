@@ -1,3 +1,5 @@
+import * as pdfjsLib from "pdfjs-dist";
+
 export default class PDFImportEngine {
 
     constructor() {
@@ -6,7 +8,29 @@ export default class PDFImportEngine {
 
     }
 
-    importDocument(file) {
+    async importDocument(file) {
+
+        const arrayBuffer = await file.arrayBuffer();
+
+        const pdf = await pdfjsLib.getDocument({
+            data: arrayBuffer
+        }).promise;
+
+        let extractedText = "";
+
+        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+
+            const page = await pdf.getPage(pageNumber);
+
+            const textContent = await page.getTextContent();
+
+            extractedText += textContent.items
+                .map(item => item.str)
+                .join(" ");
+
+            extractedText += "\n\n";
+
+        }
 
         const document = {
 
@@ -18,17 +42,37 @@ export default class PDFImportEngine {
 
             importedOn: new Date(),
 
+            lastUpdated: new Date(),
+
             status: "Imported",
 
-            pages: 0,
+            version: 1,
 
-            extractedText: "",
+            language: "Unknown",
+
+            author: "Unknown",
+
+            source: "Local Upload",
+
+            pages: pdf.numPages,
+
+            extractedText,
 
             keywords: [],
 
             topics: [],
 
-            entities: []
+            entities: [],
+
+            summary: "",
+
+            qualityScore: 0,
+
+            aiProcessed: false,
+
+            comparisonReady: false,
+
+            knowledgeReady: false
 
         };
 
@@ -47,9 +91,7 @@ export default class PDFImportEngine {
     getDocument(id) {
 
         return this.documents.find(
-
             document => document.id === id
-
         );
 
     }
@@ -62,6 +104,8 @@ export default class PDFImportEngine {
 
         document.extractedText = text;
 
+        document.lastUpdated = new Date();
+
     }
 
     updateKeywords(id, keywords) {
@@ -71,6 +115,8 @@ export default class PDFImportEngine {
         if (!document) return;
 
         document.keywords = keywords;
+
+        document.lastUpdated = new Date();
 
     }
 
@@ -82,6 +128,8 @@ export default class PDFImportEngine {
 
         document.topics = topics;
 
+        document.lastUpdated = new Date();
+
     }
 
     updateEntities(id, entities) {
@@ -91,6 +139,8 @@ export default class PDFImportEngine {
         if (!document) return;
 
         document.entities = entities;
+
+        document.lastUpdated = new Date();
 
     }
 
