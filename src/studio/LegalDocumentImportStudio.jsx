@@ -1,21 +1,33 @@
 import React, { useRef, useState } from "react";
 
+import { readPDF } from "../services/PDFService";
+
 export default function LegalDocumentImportStudio() {
 
     const fileInputRef = useRef(null);
 
     const [selectedFile, setSelectedFile] = useState(null);
 
+    const [pdfText, setPdfText] = useState("");
+
     const choosePDF = () => {
+
         fileInputRef.current.click();
+
     };
 
-    const handleFileChange = (event) => {
+    const handleFileChange = async (event) => {
 
         const file = event.target.files[0];
 
         if (file) {
+
             setSelectedFile(file);
+
+            const text = await readPDF(file);
+
+            setPdfText(text);
+
         }
 
     };
@@ -47,10 +59,12 @@ export default function LegalDocumentImportStudio() {
                 onChange={handleFileChange}
             />
 
-            <br /><br />
+            <br />
+            <br />
 
             {
                 selectedFile && (
+
                     <div>
 
                         <h3>Selected PDF</h3>
@@ -58,6 +72,28 @@ export default function LegalDocumentImportStudio() {
                         <p>{selectedFile.name}</p>
 
                     </div>
+
+                )
+            }
+
+            <br />
+
+            {
+                pdfText && (
+
+                    <div>
+
+                        <h3>Extracted Text</h3>
+
+                        <textarea
+                            rows="20"
+                            cols="120"
+                            value={pdfText}
+                            readOnly
+                        />
+
+                    </div>
+
                 )
             }
 
