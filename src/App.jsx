@@ -13,76 +13,86 @@ import KnowledgeBase from "./components/KnowledgeBase";
 import Projects from "./components/Projects";
 import KnowledgeImport from "./components/KnowledgeImport";
 
+import LegalDocumentImportStudio from "./studio/LegalDocumentImportStudio";
+
 export default function App() {
 
-  const [currentPage, setCurrentPage] = useState("dashboard");
+    const [currentPage, setCurrentPage] = useState("dashboard");
 
-  return (
-    <>
-      <Header />
+    return (
+        <>
 
-      <button onClick={() => setCurrentPage("dashboard")}>
-        Dashboard
-      </button>
+            <Header />
 
-      <button onClick={() => setCurrentPage("aiagents")}>
-        AI Agents
-      </button>
+            <button onClick={() => setCurrentPage("dashboard")}>
+                Dashboard
+            </button>
 
-      <button onClick={() => setCurrentPage("segments")}>
-        Segment Factory
-      </button>
+            <button onClick={() => setCurrentPage("aiagents")}>
+                AI Agents
+            </button>
 
-      <button onClick={() => setCurrentPage("channels")}>
-        Channel Explorer
-      </button>
+            <button onClick={() => setCurrentPage("segments")}>
+                Segment Factory
+            </button>
 
-      <button onClick={() => setCurrentPage("production")}>
-        Production Tracker
-      </button>
+            <button onClick={() => setCurrentPage("channels")}>
+                Channel Explorer
+            </button>
 
-      <button onClick={() => setCurrentPage("prompts")}>
-        Prompt Library
-      </button>
+            <button onClick={() => setCurrentPage("production")}>
+                Production Tracker
+            </button>
 
-      <button onClick={() => setCurrentPage("sop")}>
-        SOP Library
-      </button>
+            <button onClick={() => setCurrentPage("prompts")}>
+                Prompt Library
+            </button>
 
-      <button onClick={() => setCurrentPage("knowledge")}>
-        Knowledge Base
-      </button>
+            <button onClick={() => setCurrentPage("sop")}>
+                SOP Library
+            </button>
 
-      <button onClick={() => setCurrentPage("projects")}>
-        Projects
-      </button>
+            <button onClick={() => setCurrentPage("knowledge")}>
+                Knowledge Base
+            </button>
 
-      <button onClick={() => setCurrentPage("knowledgeimport")}>
-        Knowledge Import
-      </button>
+            <button onClick={() => setCurrentPage("projects")}>
+                Projects
+            </button>
 
-      <hr />
+            <button onClick={() => setCurrentPage("knowledgeimport")}>
+                Knowledge Import
+            </button>
 
-      {currentPage === "dashboard" && <Dashboard />}
+            <button onClick={() => setCurrentPage("legalstudio")}>
+                ⚖️ Legal Studio
+            </button>
 
-      {currentPage === "aiagents" && <AIAgents />}
+            <hr />
 
-      {currentPage === "segments" && <SegmentFactory />}
+            {currentPage === "dashboard" && <Dashboard />}
 
-      {currentPage === "channels" && <ChannelExplorer />}
+            {currentPage === "aiagents" && <AIAgents />}
 
-      {currentPage === "production" && <ProductionTracker />}
+            {currentPage === "segments" && <SegmentFactory />}
 
-      {currentPage === "prompts" && <PromptLibrary />}
+            {currentPage === "channels" && <ChannelExplorer />}
 
-      {currentPage === "sop" && <SOPLibrary />}
+            {currentPage === "production" && <ProductionTracker />}
 
-      {currentPage === "knowledge" && <KnowledgeBase />}
+            {currentPage === "prompts" && <PromptLibrary />}
 
-      {currentPage === "projects" && <Projects />}
+            {currentPage === "sop" && <SOPLibrary />}
 
-      {currentPage === "knowledgeimport" && <KnowledgeImport />}
+            {currentPage === "knowledge" && <KnowledgeBase />}
 
-    </>
-  );
+            {currentPage === "projects" && <Projects />}
+
+            {currentPage === "knowledgeimport" && <KnowledgeImport />}
+
+            {currentPage === "legalstudio" && <LegalDocumentImportStudio />}
+
+        </>
+    );
+
 }
