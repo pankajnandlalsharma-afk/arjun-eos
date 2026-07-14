@@ -5,7 +5,7 @@ export default function KnowledgeImport() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
 
-  async function handleFile(event) {
+  async function handlePDF(event) {
     const file = event.target.files[0];
 
     if (!file) return;
@@ -24,25 +24,117 @@ export default function KnowledgeImport() {
     setLoading(false);
   }
 
+  function comingSoon(feature) {
+    alert(feature + " support will be added in upcoming sprints.");
+  }
+
   return (
-    <div style={{ padding: "30px" }}>
-      <h2>Knowledge Import</h2>
+    <div style={{ padding: "30px", fontFamily: "Arial" }}>
+
+      <h1>ARJUN EOS</h1>
+
+      <h2>Knowledge Acquisition Center</h2>
+
+      <p>
+        Import knowledge from multiple sources into your Knowledge Projects.
+      </p>
+
+      <hr />
+
+      <h3>📄 Document Inputs</h3>
 
       <input
         type="file"
         accept=".pdf"
-        onChange={handleFile}
+        onChange={handlePDF}
       />
 
-      {loading && <h3>Reading PDF...</h3>}
+      <button onClick={() => comingSoon("DOCX")}>DOCX</button>{" "}
+      <button onClick={() => comingSoon("TXT")}>TXT</button>{" "}
+      <button onClick={() => comingSoon("Excel")}>Excel</button>{" "}
+      <button onClick={() => comingSoon("PowerPoint")}>PowerPoint</button>{" "}
+      <button onClick={() => comingSoon("CSV")}>CSV</button>
+
+      <hr />
+
+      <h3>🖼️ Image Inputs</h3>
+
+      <button onClick={() => comingSoon("Images")}>Images</button>{" "}
+      <button onClick={() => comingSoon("Scanned Documents")}>Scanned Documents</button>{" "}
+      <button onClick={() => comingSoon("Handwritten Notes")}>Handwritten Notes</button>
+
+      <hr />
+
+      <h3>🎤 Audio Inputs</h3>
+
+      <button onClick={() => comingSoon("Audio Upload")}>Audio</button>{" "}
+      <button onClick={() => comingSoon("Voice Notes")}>Voice Notes</button>
+
+      <hr />
+
+      <h3>🎥 Video Inputs</h3>
+
+      <button onClick={() => comingSoon("Video Upload")}>Video</button>{" "}
+      <button onClick={() => comingSoon("YouTube Import")}>YouTube</button>
+
+      <hr />
+
+      <h3>🌐 Website Inputs</h3>
+
+      <button onClick={() => comingSoon("Website URL")}>Website URL</button>{" "}
+      <button onClick={() => comingSoon("RSS Feed")}>RSS Feed</button>{" "}
+      <button onClick={() => comingSoon("API")}>API</button>
+
+      <hr />
+
+      <h3>☁️ Cloud Inputs</h3>
+
+      <button onClick={() => comingSoon("Google Drive")}>Google Drive</button>{" "}
+      <button onClick={() => comingSoon("OneDrive")}>OneDrive</button>{" "}
+      <button onClick={() => comingSoon("Dropbox")}>Dropbox</button>
+
+      <hr />
+
+      <h3>🗄️ Database Inputs</h3>
+
+      <button onClick={() => comingSoon("MySQL")}>MySQL</button>{" "}
+      <button onClick={() => comingSoon("PostgreSQL")}>PostgreSQL</button>{" "}
+      <button onClick={() => comingSoon("MongoDB")}>MongoDB</button>
+
+      <hr />
+
+      <h3>⌨️ Manual Inputs</h3>
+
+      <button onClick={() => comingSoon("Paste Text")}>Paste Text</button>{" "}
+      <button onClick={() => comingSoon("Rich Text Editor")}>Rich Text</button>{" "}
+      <button onClick={() => comingSoon("Voice Dictation")}>Voice</button>
+
+      <hr />
+
+      <h3>🔴 Live Inputs</h3>
+
+      <button onClick={() => comingSoon("Court Updates")}>Court Updates</button>{" "}
+      <button onClick={() => comingSoon("Government Notifications")}>Government Updates</button>
+
+      <hr />
+
+      <h3>📦 Bulk Import</h3>
+
+      <button onClick={() => comingSoon("Multiple PDFs")}>Multiple Files</button>{" "}
+      <button onClick={() => comingSoon("Folder Import")}>Folder Import</button>{" "}
+      <button onClick={() => comingSoon("ZIP Import")}>ZIP Import</button>
+
+      <hr />
+
+      {loading && (
+        <h3>Reading PDF...</h3>
+      )}
 
       {result && result.success && (
         <>
-          <h3>Import Successful</h3>
+          <h3>✅ PDF Imported Successfully</h3>
 
-          <p>
-            <strong>Pages:</strong> {result.pages}
-          </p>
+          <p><strong>Pages:</strong> {result.pages}</p>
 
           <textarea
             rows={20}
@@ -57,8 +149,9 @@ export default function KnowledgeImport() {
       )}
 
       {result && !result.success && (
-        <h3>Error: {result.error}</h3>
+        <h3>❌ Error: {result.error}</h3>
       )}
+
     </div>
   );
 }
