@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 
 import { readPDF } from "../services/PDFService";
+import KnowledgeExtractionEngine from "../feature/KnowledgeExtractionEngine";
+import KnowledgeViewer from "../components/KnowledgeViewer";
 
 export default function LegalDocumentImportStudio() {
 
@@ -9,6 +11,10 @@ export default function LegalDocumentImportStudio() {
     const [selectedFile, setSelectedFile] = useState(null);
 
     const [pdfText, setPdfText] = useState("");
+
+    const [knowledge, setKnowledge] = useState(null);
+
+    const [loading, setLoading] = useState(false);
 
     const choosePDF = () => {
 
@@ -20,15 +26,43 @@ export default function LegalDocumentImportStudio() {
 
         const file = event.target.files[0];
 
-        if (file) {
+        if (!file) return;
 
-            setSelectedFile(file);
+        setSelectedFile(file);
 
-            const text = await readPDF(file);
+        setLoading(true);
 
-            setPdfText(text);
+        const result = await readPDF(file);
+
+        if (!result.success) {
+
+            alert(result.error);
+
+            setLoading(false);
+
+            return;
 
         }
+
+        setPdfText(result.text);
+
+        const extractor = new KnowledgeExtractionEngine();
+
+        const extractedKnowledge = extractor.extract({
+
+            id: Date.now(),
+
+            fileName: file.name,
+
+            sourceType: "PDF",
+
+            text: result.text
+
+        });
+
+        setKnowledge(extractedKnowledge);
+
+        setLoading(false);
 
     };
 
@@ -59,42 +93,59 @@ export default function LegalDocumentImportStudio() {
                 onChange={handleFileChange}
             />
 
-            <br />
-            <br />
+            <br /><br />
 
             {
-                selectedFile && (
 
-                    <div>
+                loading &&
 
-                        <h3>Selected PDF</h3>
+                <h3>Reading PDF...</h3>
 
-                        <p>{selectedFile.name}</p>
-
-                    </div>
-
-                )
             }
 
-            <br />
+            {
+
+                selectedFile &&
+
+                <>
+
+                    <h3>Selected PDF</h3>
+
+                    <p>{selectedFile.name}</p>
+
+                </>
+
+            }
 
             {
-                pdfText && (
 
-                    <div>
+                pdfText &&
 
-                        <h3>Extracted Text</h3>
+                <>
 
-                        <textarea
-                            rows="20"
-                            cols="120"
-                            value={pdfText}
-                            readOnly
-                        />
+                    <h3>Extracted Text</h3>
 
-                    </div>
+                    <textarea
+                        rows={20}
+                        cols={120}
+                        value={pdfText}
+                        readOnly
+                    />
 
-                )
+                </>
+
+            }
+
+            {
+
+                knowledge &&
+
+                <KnowledgeViewer
+
+                    knowledge={knowledge}
+
+                />
+
             }
 
         </div>
