@@ -10,29 +10,65 @@ export default class KnowledgeIntelligenceEngine {
 
             intelligence: {
 
-                importantConcepts: [],
+                importantConcepts:
+                    this.extractImportantConcepts(
+                        indexedKnowledge
+                    ),
 
-                importantDefinitions: [],
+                importantDefinitions:
+                    this.extractImportantDefinitions(
+                        indexedKnowledge
+                    ),
 
-                importantFacts: [],
+                importantFacts:
+                    this.extractImportantFacts(
+                        indexedKnowledge
+                    ),
 
-                importantPrinciples: [],
+                importantPrinciples:
+                    this.extractImportantPrinciples(
+                        indexedKnowledge
+                    ),
 
-                importantProcedures: [],
+                importantProcedures:
+                    this.extractImportantProcedures(
+                        indexedKnowledge
+                    ),
 
-                importantTimelines: [],
+                importantTimelines:
+                    this.extractImportantTimelines(
+                        indexedKnowledge
+                    ),
 
-                importantChecklists: [],
+                importantChecklists:
+                    this.extractImportantChecklists(
+                        indexedKnowledge
+                    ),
 
-                importantRelationships: [],
+                importantRelationships:
+                    this.extractImportantRelationships(
+                        indexedKnowledge
+                    ),
 
-                learningObjectives: [],
+                learningObjectives:
+                    this.generateLearningObjectives(
+                        indexedKnowledge
+                    ),
 
-                quizCandidates: [],
+                quizCandidates:
+                    this.generateQuizCandidates(
+                        indexedKnowledge
+                    ),
 
-                shortsCandidates: [],
+                shortsCandidates:
+                    this.generateShortsCandidates(
+                        indexedKnowledge
+                    ),
 
-                contentCandidates: []
+                contentCandidates:
+                    this.generateContentCandidates(
+                        indexedKnowledge
+                    )
 
             },
 
@@ -43,6 +79,90 @@ export default class KnowledgeIntelligenceEngine {
             nextStep: "Quiz Intelligence Engine"
 
         };
+
+    }
+
+    extractImportantConcepts(indexedKnowledge) {
+
+        return indexedKnowledge.concepts || [];
+
+    }
+
+    extractImportantDefinitions(indexedKnowledge) {
+
+        return indexedKnowledge.definitions || [];
+
+    }
+
+    extractImportantFacts(indexedKnowledge) {
+
+        return indexedKnowledge.facts || [];
+
+    }
+
+    extractImportantPrinciples(indexedKnowledge) {
+
+        return indexedKnowledge.principles || [];
+
+    }
+
+    extractImportantProcedures(indexedKnowledge) {
+
+        return indexedKnowledge.procedures || [];
+
+    }
+
+    extractImportantTimelines(indexedKnowledge) {
+
+        return indexedKnowledge.timelines || [];
+
+    }
+
+    extractImportantChecklists(indexedKnowledge) {
+
+        return indexedKnowledge.checklists || [];
+
+    }
+
+    extractImportantRelationships(indexedKnowledge) {
+
+        return indexedKnowledge.relationships || [];
+
+    }
+
+    generateLearningObjectives(indexedKnowledge) {
+
+        return (indexedKnowledge.concepts || []).map(
+
+            concept =>
+
+                "Understand " + concept
+
+        );
+
+    }
+
+    generateQuizCandidates(indexedKnowledge) {
+
+        return indexedKnowledge.definitions || [];
+
+    }
+
+    generateShortsCandidates(indexedKnowledge) {
+
+        return indexedKnowledge.concepts || [];
+
+    }
+
+    generateContentCandidates(indexedKnowledge) {
+
+        return [
+
+            ...(indexedKnowledge.concepts || []),
+
+            ...(indexedKnowledge.principles || [])
+
+        ];
 
     }
 
