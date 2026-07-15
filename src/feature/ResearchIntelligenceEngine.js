@@ -10,39 +10,90 @@ export default class ResearchIntelligenceEngine {
 
             researchBlueprint: {
 
-                youtubeResearch: [],
+                youtubeResearch:
+                    this.getYouTubeResearch(
+                        competitorBlueprint
+                    ),
 
-                instagramResearch: [],
+                instagramResearch:
+                    this.getInstagramResearch(
+                        competitorBlueprint
+                    ),
 
-                facebookResearch: [],
+                facebookResearch:
+                    this.getFacebookResearch(
+                        competitorBlueprint
+                    ),
 
-                linkedinResearch: [],
+                linkedinResearch:
+                    this.getLinkedInResearch(
+                        competitorBlueprint
+                    ),
 
-                xResearch: [],
+                xResearch:
+                    this.getXResearch(
+                        competitorBlueprint
+                    ),
 
-                websiteResearch: [],
+                websiteResearch:
+                    this.getWebsiteResearch(
+                        competitorBlueprint
+                    ),
 
-                googleResearch: [],
+                googleResearch:
+                    this.getGoogleResearch(
+                        competitorBlueprint
+                    ),
 
-                googleTrends: [],
+                googleTrends:
+                    this.getGoogleTrends(
+                        competitorBlueprint
+                    ),
 
-                newsResearch: [],
+                newsResearch:
+                    this.getNewsResearch(
+                        competitorBlueprint
+                    ),
 
-                booksResearch: [],
+                booksResearch:
+                    this.getBooksResearch(
+                        competitorBlueprint
+                    ),
 
-                papersResearch: [],
+                papersResearch:
+                    this.getPapersResearch(
+                        competitorBlueprint
+                    ),
 
-                internalKnowledge: [],
+                internalKnowledge:
+                    this.getInternalKnowledge(
+                        competitorBlueprint
+                    ),
 
-                emergingTopics: [],
+                emergingTopics:
+                    this.getEmergingTopics(
+                        competitorBlueprint
+                    ),
 
-                trendingTopics: [],
+                trendingTopics:
+                    this.getTrendingTopics(
+                        competitorBlueprint
+                    ),
 
-                contentGaps: [],
+                contentGaps:
+                    this.getContentGaps(
+                        competitorBlueprint
+                    ),
 
-                opportunities: [],
+                opportunities:
+                    this.getOpportunities(
+                        competitorBlueprint
+                    ),
 
-                researchConfidence: 0
+                researchConfidence:
+                    this.calculateResearchConfidence(
+                        competitorBlueprint
+                    )
 
             },
 
@@ -53,6 +104,116 @@ export default class ResearchIntelligenceEngine {
             nextStep: "Pattern Intelligence Engine"
 
         };
+
+    }
+
+    getYouTubeResearch(competitorBlueprint) {
+
+        return competitorBlueprint.youtubeResearch || [];
+
+    }
+
+    getInstagramResearch(competitorBlueprint) {
+
+        return competitorBlueprint.instagramResearch || [];
+
+    }
+
+    getFacebookResearch(competitorBlueprint) {
+
+        return competitorBlueprint.facebookResearch || [];
+
+    }
+
+    getLinkedInResearch(competitorBlueprint) {
+
+        return competitorBlueprint.linkedinResearch || [];
+
+    }
+
+    getXResearch(competitorBlueprint) {
+
+        return competitorBlueprint.xResearch || [];
+
+    }
+
+    getWebsiteResearch(competitorBlueprint) {
+
+        return competitorBlueprint.websiteResearch || [];
+
+    }
+
+    getGoogleResearch(competitorBlueprint) {
+
+        return competitorBlueprint.googleResearch || [];
+
+    }
+
+    getGoogleTrends(competitorBlueprint) {
+
+        return competitorBlueprint.googleTrends || [];
+
+    }
+
+    getNewsResearch(competitorBlueprint) {
+
+        return competitorBlueprint.newsResearch || [];
+
+    }
+
+    getBooksResearch(competitorBlueprint) {
+
+        return competitorBlueprint.booksResearch || [];
+
+    }
+
+    getPapersResearch(competitorBlueprint) {
+
+        return competitorBlueprint.papersResearch || [];
+
+    }
+
+    getInternalKnowledge(competitorBlueprint) {
+
+        return competitorBlueprint.internalKnowledge || [];
+
+    }
+
+    getEmergingTopics(competitorBlueprint) {
+
+        return competitorBlueprint.emergingTopics || [];
+
+    }
+
+    getTrendingTopics(competitorBlueprint) {
+
+        return competitorBlueprint.trendingTopics || [];
+
+    }
+
+    getContentGaps(competitorBlueprint) {
+
+        return competitorBlueprint.contentGaps || [];
+
+    }
+
+    getOpportunities(competitorBlueprint) {
+
+        return competitorBlueprint.opportunities || [];
+
+    }
+
+    calculateResearchConfidence(competitorBlueprint) {
+
+        let confidence = 0;
+
+        confidence += (competitorBlueprint.youtubeResearch || []).length;
+        confidence += (competitorBlueprint.googleResearch || []).length;
+        confidence += (competitorBlueprint.newsResearch || []).length;
+        confidence += (competitorBlueprint.booksResearch || []).length;
+        confidence += (competitorBlueprint.papersResearch || []).length;
+
+        return confidence;
 
     }
 
