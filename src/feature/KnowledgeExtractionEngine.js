@@ -1,9 +1,10 @@
-[09:04, 7/15/2026] ADV. PNNKAJ NANDLAL SHRMA: }
-[09:05, 7/15/2026] ADV. PNNKAJ NANDLAL SHRMA: export default class KnowledgeExtractionEngine {
+export default class KnowledgeExtractionEngine {
 
     extract(inspectionResult) {
 
         const text = inspectionResult.text || "";
+
+        const lines = this.getLines(text);
 
         return {
 
@@ -13,27 +14,27 @@
 
             sourceType: inspectionResult.sourceType,
 
-            concepts: this.extractConcepts(text),
+            concepts: this.extractConcepts(lines),
 
-            definitions: this.extractDefinitions(text),
+            definitions: this.extractDefinitions(lines),
 
-            facts: this.extractFacts(text),
+            facts: this.extractFacts(lines),
 
-            principles: this.extractPrinciples(text),
+            principles: this.extractPrinciples(lines),
 
-            procedures: this.extractProcedures(text),
+            procedures: this.extractProcedures(lines),
 
-            timelines: this.extractTimelines(text),
+            timelines: this.extractTimelines(lines),
 
-            checklists: this.extractChecklists(text),
+            checklists: this.extractChecklists(lines),
 
             keywords: this.extractKeywords(text),
 
-            examples: this.extractExamples(text),
+            examples: this.extractExamples(lines),
 
-            exceptions: this.extractExceptions(text),
+            exceptions: this.extractExceptions(lines),
 
-            references: this.extractReferences(text),
+            references: this.extractReferences(lines),
 
             relationships: [],
 
@@ -47,6 +48,15 @@
 
     }
 
+    getLines(text) {
+
+        return text
+            .split("\n")
+            .map(line => line.trim())
+            .filter(line => line.length > 0);
+
+    }
+
     extractKeywords(text) {
 
         const stopWords = [
@@ -55,7 +65,11 @@
 
             "or","for","in","on","with","that","this",
 
-            "shall","may","be","by","as","at","from"
+            "shall","may","be","by","as","at","from",
+
+            "section","chapter","article","rule","act",
+
+            "thereof","therein","provided"
 
         ];
 
@@ -71,157 +85,157 @@
 
         words.forEach(word => {
 
-            if(stopWords.includes(word)) return;
+            if (stopWords.includes(word)) return;
 
             frequency[word] = (frequency[word] || 0) + 1;
 
         });
 
-        return Object.keys(frequency)
+        return [...new Set(
 
-            .sort((a,b)=>frequency[b]-frequency[a])
+            Object.keys(frequency)
 
-            .slice(0,50);
+                .sort((a, b) => frequency[b] - frequency[a])
 
-    }
+                .slice(0, 50)
 
-    extractDefinitions(text){
-
-        return text
-
-            .split("\n")
-
-            .filter(line=>
-
-                /means|shall mean|defined as|refers to/i.test(line)
-
-            );
+        )];
 
     }
 
-    extractConcepts(text){
+    extractDefinitions(lines) {
 
-        return text
+        return [...new Set(
 
-            .split("\n")
+            lines.filter(line =>
 
-            .filter(line=>
+                /means|shall mean|defined as|refers to|includes/i.test(line)
 
-                /principle|concept|rule|doctrine/i.test(line)
+            )
 
-            );
-
-    }
-
-    extractFacts(text){
-
-        return text
-
-            .split("\n")
-
-            .filter(line=>
-
-                /\d/.test(line)
-
-            );
+        )];
 
     }
 
-    extractPrinciples(text){
+    extractConcepts(lines) {
 
-        return text
+        return [...new Set(
 
-            .split("\n")
+            lines.filter(line =>
 
-            .filter(line=>
+                /principle|concept|doctrine|liability|offence|crime|justice/i.test(line)
 
-                /principle|rule/i.test(line)
+            )
 
-            );
-
-    }
-
-    extractProcedures(text){
-
-        return text
-
-            .split("\n")
-
-            .filter(line=>
-
-                /step|procedure|first|second|third|finally/i.test(line)
-
-            );
+        )];
 
     }
 
-    extractTimelines(text){
+    extractFacts(lines) {
 
-        return text
+        return [...new Set(
 
-            .split("\n")
+            lines.filter(line => /\d/.test(line))
 
-            .filter(line=>
-
-                /day|days|month|months|year|years|within/i.test(line)
-
-            );
+        )];
 
     }
 
-    extractChecklists(text){
+    extractPrinciples(lines) {
 
-        return text
+        return [...new Set(
 
-            .split("\n")
+            lines.filter(line =>
 
-            .filter(line=>
+                /principle|rule|maxim/i.test(line)
 
-                /^[-*•]/.test(line.trim())
+            )
 
-            );
+        )];
 
     }
 
-    extractExamples(text){
+    extractProcedures(lines) {
 
-        return text
+        return [...new Set(
 
-            .split("\n")
+            lines.filter(line =>
 
-            .filter(line=>
+                /step|procedure|first|second|third|finally|process/i.test(line)
+
+            )
+
+        )];
+
+    }
+
+    extractTimelines(lines) {
+
+        return [...new Set(
+
+            lines.filter(line =>
+
+                /day|days|week|weeks|month|months|year|years|within/i.test(line)
+
+            )
+
+        )];
+
+    }
+
+    extractChecklists(lines) {
+
+        return [...new Set(
+
+            lines.filter(line =>
+
+                /^[-*•]/.test(line)
+
+            )
+
+        )];
+
+    }
+
+    extractExamples(lines) {
+
+        return [...new Set(
+
+            lines.filter(line =>
 
                 /example|illustration/i.test(line)
 
-            );
+            )
+
+        )];
 
     }
 
-    extractExceptions(text){
+    extractExceptions(lines) {
 
-        return text
+        return [...new Set(
 
-            .split("\n")
+            lines.filter(line =>
 
-            .filter(line=>
+                /exception|however|provided that|unless/i.test(line)
 
-                /exception|provided that|however/i.test(line)
+            )
 
-            );
+        )];
 
     }
 
-    extractReferences(text){
+    extractReferences(lines) {
 
-        return text
+        return [...new Set(
 
-            .split("\n")
+            lines.filter(line =>
 
-            .filter(line=>
+                /section\s+\d+|article\s+\d+|rule\s+\d+|schedule/i.test(line)
 
-                /section|article|rule|act|schedule/i.test(line)
+            )
 
-            );
+        )];
 
     }
 

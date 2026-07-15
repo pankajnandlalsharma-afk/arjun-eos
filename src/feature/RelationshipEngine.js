@@ -1,36 +1,58 @@
 export default class RelationshipEngine {
 
-    build(knowledgeObjects) {
+    constructor() {
 
-        return {
+        this.graph = {
 
-            id: knowledgeObjects.id,
+            nodes: [],
 
-            relationships: [],
+            edges: []
 
-            relatedConcepts: [],
+        };
 
-            relatedDefinitions: [],
+    }
 
-            relatedFacts: [],
+    build(knowledgeObject) {
 
-            relatedPrinciples: [],
+        const relationship = {
 
-            relatedProcedures: [],
+            id: knowledgeObject.id,
 
-            relatedTimelines: [],
+            documentName: knowledgeObject.documentName,
 
-            relatedChecklists: [],
+            graph: this.graph,
 
-            relatedExamples: [],
+            relationships: {
 
-            relatedExceptions: [],
+                concepts: [],
 
-            relatedReferences: [],
+                definitions: [],
 
-            graphNodes: [],
+                facts: [],
 
-            graphEdges: [],
+                principles: [],
+
+                procedures: [],
+
+                timelines: [],
+
+                checklists: [],
+
+                keywords: [],
+
+                examples: [],
+
+                exceptions: [],
+
+                references: [],
+
+                crossReferences: [],
+
+                relatedDocuments: [],
+
+                relatedTopics: []
+
+            },
 
             builtAt: new Date(),
 
@@ -39,6 +61,8 @@ export default class RelationshipEngine {
             nextStep: "Knowledge Repository"
 
         };
+
+        return relationship;
 
     }
 

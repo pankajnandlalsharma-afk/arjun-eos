@@ -5,32 +5,153 @@ export default function KnowledgeViewer({ knowledge }) {
     if (!knowledge) {
 
         return (
-            <div style={{ padding: "20px" }}>
+            <div
+                style={{
+                    marginTop: "30px",
+                    padding: "20px",
+                    border: "1px solid #ddd",
+                    borderRadius: "8px"
+                }}
+            >
                 <h2>No Knowledge Extracted</h2>
             </div>
         );
 
     }
 
+    function renderList(title, items) {
+
+        return (
+
+            <div
+                style={{
+                    marginTop: "25px"
+                }}
+            >
+
+                <h3>{title}</h3>
+
+                <hr />
+
+                {
+
+                    items && items.length > 0 ? (
+
+                        <ul>
+
+                            {
+
+                                items.map((item, index) => (
+
+                                    <li key={index}>
+
+                                        {item}
+
+                                    </li>
+
+                                ))
+
+                            }
+
+                        </ul>
+
+                    ) : (
+
+                        <p>No Data Found</p>
+
+                    )
+
+                }
+
+            </div>
+
+        );
+
+    }
+
     return (
 
-        <div style={{ padding: "20px" }}>
+        <div
+            style={{
+                marginTop: "40px",
+                padding: "25px",
+                border: "2px solid #1565c0",
+                borderRadius: "10px",
+                background: "#fafafa"
+            }}
+        >
 
-            <h2>Knowledge Summary</h2>
+            <h1>Knowledge Dashboard</h1>
 
             <hr />
 
-            <table border="1" cellPadding="8">
+            <table
+                style={{
+                    width: "100%",
+                    borderCollapse: "collapse"
+                }}
+                border="1"
+                cellPadding="8"
+            >
 
                 <tbody>
 
                     <tr>
 
-                        <td>Document</td>
+                        <td><strong>Document</strong></td>
 
                         <td>{knowledge.fileName}</td>
 
                     </tr>
+
+                    <tr>
+
+                        <td><strong>Source</strong></td>
+
+                        <td>{knowledge.sourceType}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td><strong>Status</strong></td>
+
+                        <td>{knowledge.extractionStatus}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td><strong>Extracted At</strong></td>
+
+                        <td>
+
+                            {new Date(
+                                knowledge.extractedAt
+                            ).toLocaleString()}
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <br />
+
+            <h2>Knowledge Summary</h2>
+
+            <table
+                style={{
+                    width: "100%",
+                    borderCollapse: "collapse"
+                }}
+                border="1"
+                cellPadding="8"
+            >
+
+                <tbody>
 
                     <tr>
 
@@ -58,9 +179,57 @@ export default function KnowledgeViewer({ knowledge }) {
 
                     <tr>
 
+                        <td>Facts</td>
+
+                        <td>{knowledge.facts.length}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Principles</td>
+
+                        <td>{knowledge.principles.length}</td>
+
+                    </tr>
+
+                    <tr>
+
                         <td>Procedures</td>
 
                         <td>{knowledge.procedures.length}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Timelines</td>
+
+                        <td>{knowledge.timelines.length}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Checklists</td>
+
+                        <td>{knowledge.checklists.length}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Examples</td>
+
+                        <td>{knowledge.examples.length}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Exceptions</td>
+
+                        <td>{knowledge.exceptions.length}</td>
 
                     </tr>
 
@@ -72,99 +241,31 @@ export default function KnowledgeViewer({ knowledge }) {
 
                     </tr>
 
-                    <tr>
-
-                        <td>Status</td>
-
-                        <td>{knowledge.extractionStatus}</td>
-
-                    </tr>
-
                 </tbody>
 
             </table>
 
-            <br />
+            {renderList("Keywords", knowledge.keywords)}
 
-            <h3>Keywords</h3>
+            {renderList("Definitions", knowledge.definitions)}
 
-            <ul>
+            {renderList("Concepts", knowledge.concepts)}
 
-                {
+            {renderList("Facts", knowledge.facts)}
 
-                    knowledge.keywords.map((item,index)=>
+            {renderList("Principles", knowledge.principles)}
 
-                        <li key={index}>{item}</li>
+            {renderList("Procedures", knowledge.procedures)}
 
-                    )
+            {renderList("Timelines", knowledge.timelines)}
 
-                }
+            {renderList("Checklists", knowledge.checklists)}
 
-            </ul>
+            {renderList("Examples", knowledge.examples)}
 
-            <h3>Definitions</h3>
+            {renderList("Exceptions", knowledge.exceptions)}
 
-            <ul>
-
-                {
-
-                    knowledge.definitions.map((item,index)=>
-
-                        <li key={index}>{item}</li>
-
-                    )
-
-                }
-
-            </ul>
-
-            <h3>Concepts</h3>
-
-            <ul>
-
-                {
-
-                    knowledge.concepts.map((item,index)=>
-
-                        <li key={index}>{item}</li>
-
-                    )
-
-                }
-
-            </ul>
-
-            <h3>Procedures</h3>
-
-            <ul>
-
-                {
-
-                    knowledge.procedures.map((item,index)=>
-
-                        <li key={index}>{item}</li>
-
-                    )
-
-                }
-
-            </ul>
-
-            <h3>References</h3>
-
-            <ul>
-
-                {
-
-                    knowledge.references.map((item,index)=>
-
-                        <li key={index}>{item}</li>
-
-                    )
-
-                }
-
-            </ul>
+            {renderList("References", knowledge.references)}
 
         </div>
 
