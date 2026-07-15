@@ -8,19 +8,11 @@ export default class OptionGenerationEngine {
 
             documentName: questionObject.documentName,
 
-            options: [],
+            options: this.generateOptions(
 
-            optionStructure: {
+                questionObject.questions || []
 
-                optionA: "",
-
-                optionB: "",
-
-                optionC: "",
-
-                optionD: ""
-
-            },
+            ),
 
             generatedAt: new Date(),
 
@@ -29,6 +21,34 @@ export default class OptionGenerationEngine {
             nextStep: "Answer Generation Engine"
 
         };
+
+    }
+
+    generateOptions(questions) {
+
+        return questions.map((question, index) => ({
+
+            questionId: question.id || index + 1,
+
+            question: question.question,
+
+            type: question.type,
+
+            optionStructure: {
+
+                optionA: question.answer || "Correct Answer",
+
+                optionB: "Distractor Option 1",
+
+                optionC: "Distractor Option 2",
+
+                optionD: "Distractor Option 3"
+
+            },
+
+            correctOption: "A"
+
+        }));
 
     }
 
