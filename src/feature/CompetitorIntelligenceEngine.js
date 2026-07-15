@@ -10,39 +10,90 @@ export default class CompetitorIntelligenceEngine {
 
             competitorBlueprint: {
 
-                competitors: [],
+                competitors:
+                    this.getCompetitors(
+                        audienceBlueprint
+                    ),
 
-                topChannels: [],
+                topChannels:
+                    this.getTopChannels(
+                        audienceBlueprint
+                    ),
 
-                topCreators: [],
+                topCreators:
+                    this.getTopCreators(
+                        audienceBlueprint
+                    ),
 
-                topVideos: [],
+                topVideos:
+                    this.getTopVideos(
+                        audienceBlueprint
+                    ),
 
-                contentFormats: [],
+                contentFormats:
+                    this.getContentFormats(
+                        audienceBlueprint
+                    ),
 
-                postingFrequency: "",
+                postingFrequency:
+                    this.getPostingFrequency(
+                        audienceBlueprint
+                    ),
 
-                averageViews: 0,
+                averageViews:
+                    this.getAverageViews(
+                        audienceBlueprint
+                    ),
 
-                averageEngagement: 0,
+                averageEngagement:
+                    this.getAverageEngagement(
+                        audienceBlueprint
+                    ),
 
-                topHooks: [],
+                topHooks:
+                    this.getTopHooks(
+                        audienceBlueprint
+                    ),
 
-                topTitles: [],
+                topTitles:
+                    this.getTopTitles(
+                        audienceBlueprint
+                    ),
 
-                topThumbnails: [],
+                topThumbnails:
+                    this.getTopThumbnails(
+                        audienceBlueprint
+                    ),
 
-                topHashtags: [],
+                topHashtags:
+                    this.getTopHashtags(
+                        audienceBlueprint
+                    ),
 
-                strengths: [],
+                strengths:
+                    this.getStrengths(
+                        audienceBlueprint
+                    ),
 
-                weaknesses: [],
+                weaknesses:
+                    this.getWeaknesses(
+                        audienceBlueprint
+                    ),
 
-                opportunities: [],
+                opportunities:
+                    this.getOpportunities(
+                        audienceBlueprint
+                    ),
 
-                threats: [],
+                threats:
+                    this.getThreats(
+                        audienceBlueprint
+                    ),
 
-                benchmarkKPIs: []
+                benchmarkKPIs:
+                    this.getBenchmarkKPIs(
+                        audienceBlueprint
+                    )
 
             },
 
@@ -53,6 +104,108 @@ export default class CompetitorIntelligenceEngine {
             nextStep: "Research Intelligence Engine"
 
         };
+
+    }
+
+    getCompetitors(audienceBlueprint) {
+
+        return audienceBlueprint.competitors || [];
+
+    }
+
+    getTopChannels(audienceBlueprint) {
+
+        return audienceBlueprint.topChannels || [];
+
+    }
+
+    getTopCreators(audienceBlueprint) {
+
+        return audienceBlueprint.topCreators || [];
+
+    }
+
+    getTopVideos(audienceBlueprint) {
+
+        return audienceBlueprint.topVideos || [];
+
+    }
+
+    getContentFormats(audienceBlueprint) {
+
+        return audienceBlueprint.contentFormats || [];
+
+    }
+
+    getPostingFrequency(audienceBlueprint) {
+
+        return audienceBlueprint.postingFrequency || "";
+
+    }
+
+    getAverageViews(audienceBlueprint) {
+
+        return audienceBlueprint.averageViews || 0;
+
+    }
+
+    getAverageEngagement(audienceBlueprint) {
+
+        return audienceBlueprint.averageEngagement || 0;
+
+    }
+
+    getTopHooks(audienceBlueprint) {
+
+        return audienceBlueprint.topHooks || [];
+
+    }
+
+    getTopTitles(audienceBlueprint) {
+
+        return audienceBlueprint.topTitles || [];
+
+    }
+
+    getTopThumbnails(audienceBlueprint) {
+
+        return audienceBlueprint.topThumbnails || [];
+
+    }
+
+    getTopHashtags(audienceBlueprint) {
+
+        return audienceBlueprint.topHashtags || [];
+
+    }
+
+    getStrengths(audienceBlueprint) {
+
+        return audienceBlueprint.strengths || [];
+
+    }
+
+    getWeaknesses(audienceBlueprint) {
+
+        return audienceBlueprint.weaknesses || [];
+
+    }
+
+    getOpportunities(audienceBlueprint) {
+
+        return audienceBlueprint.opportunities || [];
+
+    }
+
+    getThreats(audienceBlueprint) {
+
+        return audienceBlueprint.threats || [];
+
+    }
+
+    getBenchmarkKPIs(audienceBlueprint) {
+
+        return audienceBlueprint.benchmarkKPIs || [];
 
     }
 
