@@ -10,35 +10,53 @@ export default class QuizIntelligenceEngine {
 
             quizIntelligence: {
 
-                quizTopics: [],
+                quizTopics:
+                    this.generateQuizTopics(
+                        intelligenceObject
+                    ),
 
-                learningObjectives: [],
+                learningObjectives:
+                    this.generateLearningObjectives(
+                        intelligenceObject
+                    ),
 
-                importantFacts: [],
+                importantFacts:
+                    this.extractImportantFacts(
+                        intelligenceObject
+                    ),
 
-                importantDefinitions: [],
+                importantDefinitions:
+                    this.extractImportantDefinitions(
+                        intelligenceObject
+                    ),
 
-                importantPrinciples: [],
+                importantPrinciples:
+                    this.extractImportantPrinciples(
+                        intelligenceObject
+                    ),
 
-                importantProcedures: [],
+                importantProcedures:
+                    this.extractImportantProcedures(
+                        intelligenceObject
+                    ),
 
-                importantTimelines: [],
+                importantTimelines:
+                    this.extractImportantTimelines(
+                        intelligenceObject
+                    ),
 
-                quizDifficulty: "Medium",
+                quizDifficulty:
+                    this.calculateDifficulty(
+                        intelligenceObject
+                    ),
 
-                recommendedQuestionTypes: [
+                recommendedQuestionTypes:
+                    this.getQuestionTypes(),
 
-                    "MCQ",
-
-                    "True/False",
-
-                    "Fill in the Blanks",
-
-                    "Scenario Based"
-
-                ],
-
-                estimatedQuestions: 0
+                estimatedQuestions:
+                    this.calculateEstimatedQuestions(
+                        intelligenceObject
+                    )
 
             },
 
@@ -49,6 +67,136 @@ export default class QuizIntelligenceEngine {
             nextStep: "Question Generation Engine"
 
         };
+
+    }
+
+    generateQuizTopics(intelligenceObject) {
+
+        return intelligenceObject
+            .intelligence
+            ?.importantConcepts || [];
+
+    }
+
+    generateLearningObjectives(intelligenceObject) {
+
+        return intelligenceObject
+            .intelligence
+            ?.learningObjectives || [];
+
+    }
+
+    extractImportantFacts(intelligenceObject) {
+
+        return intelligenceObject
+            .intelligence
+            ?.importantFacts || [];
+
+    }
+
+    extractImportantDefinitions(intelligenceObject) {
+
+        return intelligenceObject
+            .intelligence
+            ?.importantDefinitions || [];
+
+    }
+
+    extractImportantPrinciples(intelligenceObject) {
+
+        return intelligenceObject
+            .intelligence
+            ?.importantPrinciples || [];
+
+    }
+
+    extractImportantProcedures(intelligenceObject) {
+
+        return intelligenceObject
+            .intelligence
+            ?.importantProcedures || [];
+
+    }
+
+    extractImportantTimelines(intelligenceObject) {
+
+        return intelligenceObject
+            .intelligence
+            ?.importantTimelines || [];
+
+    }
+
+    calculateDifficulty(intelligenceObject) {
+
+        const concepts =
+            intelligenceObject
+            .intelligence
+            ?.importantConcepts
+            ?.length || 0;
+
+        if (concepts >= 100) {
+
+            return "Expert";
+
+        }
+
+        if (concepts >= 50) {
+
+            return "Advanced";
+
+        }
+
+        if (concepts >= 20) {
+
+            return "Intermediate";
+
+        }
+
+        return "Beginner";
+
+    }
+
+    getQuestionTypes() {
+
+        return [
+
+            "MCQ",
+
+            "True/False",
+
+            "Fill in the Blanks",
+
+            "Scenario Based",
+
+            "Short Answer",
+
+            "Long Answer"
+
+        ];
+
+    }
+
+    calculateEstimatedQuestions(intelligenceObject) {
+
+        const concepts =
+            intelligenceObject
+            .intelligence
+            ?.importantConcepts
+            ?.length || 0;
+
+        const definitions =
+            intelligenceObject
+            .intelligence
+            ?.importantDefinitions
+            ?.length || 0;
+
+        const facts =
+            intelligenceObject
+            .intelligence
+            ?.importantFacts
+            ?.length || 0;
+
+        return concepts + definitions + facts;
 
     }
 
