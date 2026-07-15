@@ -7,22 +7,54 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 
 export async function readPDF(file) {
 
-    const arrayBuffer = await file.arrayBuffer();
+    try {
 
-    const loadingTask = pdfjsLib.getDocument({
-        data: arrayBuffer
-    });
+        const arrayBuffer = await file.arrayBuffer();
 
-    const pdf = await loadingTask.promise;
+        const loadingTask = pdfjsLib.getDocument({
+            data: arrayBuffer
+        });
 
-    const page = await pdf.getPage(1);
+        const pdf = await loadingTask.promise;
 
-    const textContent = await page.getTextContent();
+        let fullText = "";
 
-    const text = textContent.items
-        .map(item => item.str)
-        .join(" ");
+        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
 
-    return text;
+            const page = await pdf.getPage(pageNumber);
+
+            const textContent = await page.getTextContent();
+
+            const pageText = textContent.items
+                .map(item => item.str)
+                .join(" ");
+
+            fullText += pageText + "\n\n";
+
+        }
+
+        return {
+
+            success: true,
+
+            pages: pdf.numPages,
+
+            text: fullText
+
+        };
+
+    } catch (error) {
+
+        console.error(error);
+
+        return {
+
+            success: false,
+
+            error: error.message
+
+        };
+
+    }
 
 }
