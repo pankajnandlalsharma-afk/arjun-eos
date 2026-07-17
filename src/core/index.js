@@ -1,7 +1,18 @@
 /**
  * ====================================================
  * ARJUN EOS
- * Core Exports
+ * Core Module
+ *
+ * Central export point for all Core services.
+ * Import Core modules from this file instead of
+ * importing individual files.
+ *
+ * Example:
+ * import {
+ *     AppInitializer,
+ *     ConfigurationManager,
+ *     LoggerManager
+ * } from "@/core";
  * ====================================================
  */
 
