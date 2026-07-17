@@ -5,20 +5,41 @@
  * ====================================================
  */
 
+import ConfigurationManager from "./ConfigurationManager";
+import LoggerManager from "./LoggerManager";
+
 class AppInitializer {
     constructor() {
         this.initialized = false;
     }
 
     async initialize() {
-        console.log("======================================");
-        console.log("Starting ARJUN EOS...");
-        console.log("Initializing Core...");
-        console.log("======================================");
+
+        if (this.initialized) {
+            LoggerManager.warn("Application is already initialized.");
+            return;
+        }
+
+        LoggerManager.info("======================================");
+        LoggerManager.info("Starting ARJUN EOS...");
+        LoggerManager.info("Initializing Core...");
+        LoggerManager.info("======================================");
+
+        LoggerManager.info(
+            `Application : ${ConfigurationManager.get("appName")}`
+        );
+
+        LoggerManager.info(
+            `Version : ${ConfigurationManager.get("version")}`
+        );
+
+        LoggerManager.info(
+            `Environment : ${ConfigurationManager.get("environment")}`
+        );
 
         this.initialized = true;
 
-        console.log("ARJUN EOS Started Successfully.");
+        LoggerManager.success("ARJUN EOS Started Successfully.");
     }
 
     isInitialized() {
