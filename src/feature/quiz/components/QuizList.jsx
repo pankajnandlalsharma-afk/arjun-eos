@@ -16,17 +16,46 @@ function QuizList() {
     const [quizzes, setQuizzes] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [selectedQuizId, setSelectedQuizId] = useState("");
+    const [editingQuiz, setEditingQuiz] = useState(null);
 
     useEffect(() => {
         loadQuizzes();
     }, []);
 
     const loadQuizzes = () => {
-
         const data = QuizController.getAllQuizzes();
-
         setQuizzes(data || []);
+    };
 
+    const handleCreateQuiz = () => {
+        setEditingQuiz(null);
+        setSelectedQuizId("");
+        setShowForm(true);
+    };
+
+    const handleEditQuiz = (quiz) => {
+        setEditingQuiz(quiz);
+        setSelectedQuizId("");
+        setShowForm(true);
+    };
+
+    const handleDeleteQuiz = (id) => {
+        QuizController.deleteQuiz(id);
+        loadQuizzes();
+
+        if (editingQuiz?.id === id) {
+            setEditingQuiz(null);
+        }
+
+        if (selectedQuizId === id) {
+            setSelectedQuizId("");
+        }
+    };
+
+    const handleAddQuestions = (quiz) => {
+        setEditingQuiz(null);
+        setSelectedQuizId(quiz.id);
+        setShowForm(true);
     };
 
     return (
@@ -62,10 +91,12 @@ function QuizList() {
                 <button
                     onClick={() => {
 
-                        setShowForm(!showForm);
-
                         if (showForm) {
+                            setShowForm(false);
+                            setEditingQuiz(null);
                             setSelectedQuizId("");
+                        } else {
+                            handleCreateQuiz();
                         }
 
                     }}
@@ -84,23 +115,21 @@ function QuizList() {
 
                 <>
                     <QuizForm
+                        quiz={editingQuiz}
                         onQuizCreated={() => {
-
                             loadQuizzes();
-
+                            setEditingQuiz(null);
                         }}
                     />
 
-                    {selectedQuizId !== "" && (
+                    {selectedQuizId && (
 
                         <div style={{ marginTop: "30px" }}>
 
                             <QuestionForm
                                 quizId={selectedQuizId}
                                 onQuestionCreated={() => {
-
                                     loadQuizzes();
-
                                 }}
                             />
 
@@ -149,13 +178,11 @@ function QuizList() {
                     >
 
                         <tr>
-
                             <th align="left">Title</th>
                             <th align="left">Category</th>
                             <th align="left">Difficulty</th>
                             <th align="center">Questions</th>
                             <th align="center">Actions</th>
-
                         </tr>
 
                     </thead>
@@ -172,42 +199,28 @@ function QuizList() {
                             >
 
                                 <td>{quiz.title}</td>
-
                                 <td>{quiz.category}</td>
-
                                 <td>{quiz.difficulty}</td>
-
-                                <td align="center">
-
-                                    {quiz.questions.length}
-
-                                </td>
+                                <td align="center">{quiz.questions.length}</td>
 
                                 <td align="center">
 
                                     <button
-                                        onClick={() => {
-
-                                            setShowForm(true);
-                                            setSelectedQuizId(quiz.id);
-
-                                        }}
+                                        onClick={() => handleAddQuestions(quiz)}
                                     >
                                         Add Questions
                                     </button>
 
                                     <button
-                                        style={{
-                                            marginLeft: "10px"
-                                        }}
+                                        style={{ marginLeft: "10px" }}
+                                        onClick={() => handleEditQuiz(quiz)}
                                     >
                                         Edit
                                     </button>
 
                                     <button
-                                        style={{
-                                            marginLeft: "10px"
-                                        }}
+                                        style={{ marginLeft: "10px" }}
+                                        onClick={() => handleDeleteQuiz(quiz.id)}
                                     >
                                         Delete
                                     </button>
