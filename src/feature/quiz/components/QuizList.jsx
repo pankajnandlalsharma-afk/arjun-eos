@@ -12,25 +12,32 @@ import QuizForm from "./QuizForm";
 import QuestionForm from "./QuestionForm";
 
 function QuizList() {
+
     const [quizzes, setQuizzes] = useState([]);
     const [showForm, setShowForm] = useState(false);
+    const [selectedQuizId, setSelectedQuizId] = useState("");
 
     useEffect(() => {
         loadQuizzes();
     }, []);
 
     const loadQuizzes = () => {
+
         const data = QuizController.getAllQuizzes();
+
         setQuizzes(data || []);
+
     };
 
     return (
+
         <div
             style={{
                 padding: "25px",
                 fontFamily: "Arial, Helvetica, sans-serif"
             }}
         >
+
             <div
                 style={{
                     display: "flex",
@@ -39,7 +46,9 @@ function QuizList() {
                     marginBottom: "25px"
                 }}
             >
+
                 <div>
+
                     <h1 style={{ margin: 0 }}>
                         📝 Quiz Studio
                     </h1>
@@ -47,10 +56,19 @@ function QuizList() {
                     <p style={{ color: "#666" }}>
                         Create, manage and organize your quizzes.
                     </p>
+
                 </div>
 
                 <button
-                    onClick={() => setShowForm(!showForm)}
+                    onClick={() => {
+
+                        setShowForm(!showForm);
+
+                        if (showForm) {
+                            setSelectedQuizId("");
+                        }
+
+                    }}
                     style={{
                         padding: "10px 18px",
                         cursor: "pointer",
@@ -59,23 +77,43 @@ function QuizList() {
                 >
                     {showForm ? "Close Form" : "+ Create Quiz"}
                 </button>
+
             </div>
 
             {showForm && (
+
                 <>
                     <QuizForm
                         onQuizCreated={() => {
+
                             loadQuizzes();
+
                         }}
                     />
 
-                    <div style={{ marginTop: "30px" }}>
-                        <QuestionForm />
-                    </div>
+                    {selectedQuizId !== "" && (
+
+                        <div style={{ marginTop: "30px" }}>
+
+                            <QuestionForm
+                                quizId={selectedQuizId}
+                                onQuestionCreated={() => {
+
+                                    loadQuizzes();
+
+                                }}
+                            />
+
+                        </div>
+
+                    )}
+
                 </>
+
             )}
 
             {quizzes.length === 0 && (
+
                 <div
                     style={{
                         border: "1px dashed #999",
@@ -84,13 +122,17 @@ function QuizList() {
                         borderRadius: "8px"
                     }}
                 >
+
                     <h2>No quizzes available</h2>
 
                     <p>Create your first quiz to get started.</p>
+
                 </div>
+
             )}
 
             {quizzes.length > 0 && (
+
                 <table
                     width="100%"
                     cellPadding="12"
@@ -99,28 +141,36 @@ function QuizList() {
                         border: "1px solid #ddd"
                     }}
                 >
+
                     <thead
                         style={{
                             background: "#f5f5f5"
                         }}
                     >
+
                         <tr>
+
                             <th align="left">Title</th>
                             <th align="left">Category</th>
                             <th align="left">Difficulty</th>
                             <th align="center">Questions</th>
                             <th align="center">Actions</th>
+
                         </tr>
+
                     </thead>
 
                     <tbody>
+
                         {quizzes.map((quiz) => (
+
                             <tr
                                 key={quiz.id}
                                 style={{
                                     borderTop: "1px solid #ddd"
                                 }}
                             >
+
                                 <td>{quiz.title}</td>
 
                                 <td>{quiz.category}</td>
@@ -128,11 +178,31 @@ function QuizList() {
                                 <td>{quiz.difficulty}</td>
 
                                 <td align="center">
+
                                     {quiz.questions.length}
+
                                 </td>
 
                                 <td align="center">
-                                    <button>Edit</button>
+
+                                    <button
+                                        onClick={() => {
+
+                                            setShowForm(true);
+                                            setSelectedQuizId(quiz.id);
+
+                                        }}
+                                    >
+                                        Add Questions
+                                    </button>
+
+                                    <button
+                                        style={{
+                                            marginLeft: "10px"
+                                        }}
+                                    >
+                                        Edit
+                                    </button>
 
                                     <button
                                         style={{
@@ -141,14 +211,23 @@ function QuizList() {
                                     >
                                         Delete
                                     </button>
+
                                 </td>
+
                             </tr>
+
                         ))}
+
                     </tbody>
+
                 </table>
+
             )}
+
         </div>
+
     );
+
 }
 
 export default QuizList;
