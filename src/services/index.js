@@ -8,3 +8,4 @@
  */
 
 export { default as QuizService } from "./QuizService";
+export { default as QuestionService } from "./QuestionService";
