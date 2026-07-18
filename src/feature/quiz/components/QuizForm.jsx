@@ -9,7 +9,7 @@ import { useState } from "react";
 import { Quiz } from "../../../models";
 import { QuizController } from "../../../controllers";
 
-function QuizForm() {
+function QuizForm({ onQuizCreated }) {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -35,6 +35,10 @@ function QuizForm() {
         setDescription("");
         setCategory("");
         setDifficulty("Medium");
+
+        if (onQuizCreated) {
+            onQuizCreated();
+        }
 
     };
 
