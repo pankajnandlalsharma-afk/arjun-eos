@@ -8,3 +8,4 @@
  */
 
 export { default as QuizController } from "./QuizController";
+export { default as QuestionController } from "./QuestionController";
