@@ -6,8 +6,10 @@
  */
 
 import { useState } from "react";
+import { Question, Option } from "../../../models";
+import { QuestionController } from "../../../controllers";
 
-function QuestionForm() {
+function QuestionForm({ quizId = "", onQuestionCreated }) {
 
     const [question, setQuestion] = useState("");
     const [questionType, setQuestionType] = useState("multiple-choice");
@@ -20,11 +22,89 @@ function QuestionForm() {
     const [negativeMarks, setNegativeMarks] = useState(0);
     const [difficulty, setDifficulty] = useState("Medium");
 
+    const clearForm = () => {
+
+        setQuestion("");
+        setQuestionType("multiple-choice");
+        setOptionA("");
+        setOptionB("");
+        setOptionC("");
+        setOptionD("");
+        setCorrectAnswer("A");
+        setMarks(1);
+        setNegativeMarks(0);
+        setDifficulty("Medium");
+
+    };
+
     const handleSubmit = (event) => {
 
         event.preventDefault();
 
-        alert("Question Form UI completed.");
+        try {
+
+            const options = [
+                new Option({
+                    text: optionA,
+                    isCorrect: correctAnswer === "A"
+                }),
+                new Option({
+                    text: optionB,
+                    isCorrect: correctAnswer === "B"
+                }),
+                new Option({
+                    text: optionC,
+                    isCorrect: correctAnswer === "C"
+                }),
+                new Option({
+                    text: optionD,
+                    isCorrect: correctAnswer === "D"
+                })
+            ].filter(option => option.text.trim() !== "");
+
+            const answerIndex = {
+                A: 0,
+                B: 1,
+                C: 2,
+                D: 3
+            };
+
+            const newQuestion = new Question({
+
+                quizId,
+
+                type: questionType,
+
+                question,
+
+                options,
+
+                correctAnswer: answerIndex[correctAnswer],
+
+                marks,
+
+                negativeMarks,
+
+                difficulty
+
+            });
+
+            QuestionController.createQuestion(newQuestion);
+
+            alert("Question saved successfully.");
+
+            clearForm();
+
+            if (onQuestionCreated) {
+                onQuestionCreated();
+            }
+
+        }
+        catch (error) {
+
+            alert(error.message);
+
+        }
 
     };
 
@@ -61,18 +141,9 @@ function QuestionForm() {
                         value={questionType}
                         onChange={(e) => setQuestionType(e.target.value)}
                     >
-                        <option value="multiple-choice">
-                            Multiple Choice
-                        </option>
-
-                        <option value="true-false">
-                            True / False
-                        </option>
-
-                        <option value="fill-blank">
-                            Fill in the Blank
-                        </option>
-
+                        <option value="multiple-choice">Multiple Choice</option>
+                        <option value="true-false">True / False</option>
+                        <option value="fill-blank">Fill in the Blank</option>
                     </select>
                 </div>
 
@@ -127,7 +198,6 @@ function QuestionForm() {
                         <option value="C">Option C</option>
                         <option value="D">Option D</option>
                     </select>
-
                 </div>
 
                 <div style={{ marginBottom: "15px" }}>
@@ -140,7 +210,6 @@ function QuestionForm() {
                         value={marks}
                         onChange={(e) => setMarks(Number(e.target.value))}
                     />
-
                 </div>
 
                 <div style={{ marginBottom: "15px" }}>
@@ -153,7 +222,6 @@ function QuestionForm() {
                         value={negativeMarks}
                         onChange={(e) => setNegativeMarks(Number(e.target.value))}
                     />
-
                 </div>
 
                 <div style={{ marginBottom: "15px" }}>
@@ -168,7 +236,6 @@ function QuestionForm() {
                         <option>Medium</option>
                         <option>Hard</option>
                     </select>
-
                 </div>
 
                 <button type="submit">
