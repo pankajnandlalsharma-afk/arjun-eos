@@ -9,6 +9,7 @@ class Question {
 
     constructor({
         id = crypto.randomUUID(),
+        quizId = "",
         type = "multiple-choice",
         question = "",
         options = [],
@@ -17,10 +18,14 @@ class Question {
         marks = 1,
         negativeMarks = 0,
         difficulty = "Medium",
-        tags = []
+        tags = [],
+        image = "",
+        createdAt = new Date().toISOString(),
+        updatedAt = new Date().toISOString()
     } = {}) {
 
         this.id = id;
+        this.quizId = quizId;
         this.type = type;
         this.question = question;
         this.options = options;
@@ -30,12 +35,16 @@ class Question {
         this.negativeMarks = negativeMarks;
         this.difficulty = difficulty;
         this.tags = tags;
+        this.image = image;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
 
     }
 
     addOption(option) {
 
         this.options.push(option);
+        this.updatedAt = new Date().toISOString();
 
     }
 
@@ -45,11 +54,14 @@ class Question {
             option => option.id !== optionId
         );
 
+        this.updatedAt = new Date().toISOString();
+
     }
 
     updateAnswer(answer) {
 
         this.correctAnswer = answer;
+        this.updatedAt = new Date().toISOString();
 
     }
 
