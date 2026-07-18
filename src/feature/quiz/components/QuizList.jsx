@@ -2,7 +2,6 @@
  * ====================================================
  * ARJUN EOS
  * Quiz Studio
- * Quiz List
  * ====================================================
  */
 
@@ -10,13 +9,18 @@ import { useEffect, useState } from "react";
 import { QuizController } from "../../../controllers";
 import QuizForm from "./QuizForm";
 import QuestionForm from "./QuestionForm";
+import QuestionList from "./QuestionList";
 
 function QuizList() {
 
     const [quizzes, setQuizzes] = useState([]);
     const [showForm, setShowForm] = useState(false);
+
     const [selectedQuizId, setSelectedQuizId] = useState("");
     const [editingQuiz, setEditingQuiz] = useState(null);
+
+    const [editingQuestion, setEditingQuestion] = useState(null);
+    const [questionRefreshKey, setQuestionRefreshKey] = useState(0);
 
     useEffect(() => {
         loadQuizzes();
@@ -27,21 +31,32 @@ function QuizList() {
         setQuizzes(data || []);
     };
 
+    const refreshQuestions = () => {
+        setQuestionRefreshKey(previous => previous + 1);
+        loadQuizzes();
+    };
+
     const handleCreateQuiz = () => {
         setEditingQuiz(null);
+        setEditingQuestion(null);
         setSelectedQuizId("");
         setShowForm(true);
     };
 
     const handleEditQuiz = (quiz) => {
         setEditingQuiz(quiz);
+        setEditingQuestion(null);
         setSelectedQuizId("");
         setShowForm(true);
     };
 
     const handleDeleteQuiz = (id) => {
-        QuizController.deleteQuiz(id);
-        loadQuizzes();
+
+        const deleted = QuizController.deleteQuiz(id);
+
+        if (deleted !== false) {
+            loadQuizzes();
+        }
 
         if (editingQuiz?.id === id) {
             setEditingQuiz(null);
@@ -50,10 +65,14 @@ function QuizList() {
         if (selectedQuizId === id) {
             setSelectedQuizId("");
         }
+
+        setEditingQuestion(null);
+
     };
 
     const handleAddQuestions = (quiz) => {
         setEditingQuiz(null);
+        setEditingQuestion(null);
         setSelectedQuizId(quiz.id);
         setShowForm(true);
     };
@@ -92,11 +111,16 @@ function QuizList() {
                     onClick={() => {
 
                         if (showForm) {
+
                             setShowForm(false);
                             setEditingQuiz(null);
+                            setEditingQuestion(null);
                             setSelectedQuizId("");
+
                         } else {
+
                             handleCreateQuiz();
+
                         }
 
                     }}
@@ -114,26 +138,43 @@ function QuizList() {
             {showForm && (
 
                 <>
+
                     <QuizForm
                         quiz={editingQuiz}
                         onQuizCreated={() => {
+
                             loadQuizzes();
                             setEditingQuiz(null);
+
                         }}
                     />
 
                     {selectedQuizId && (
 
-                        <div style={{ marginTop: "30px" }}>
+                        <>
 
                             <QuestionForm
                                 quizId={selectedQuizId}
+                                editingQuestion={editingQuestion}
                                 onQuestionCreated={() => {
-                                    loadQuizzes();
+
+                                    setEditingQuestion(null);
+                                    refreshQuestions();
+
                                 }}
                             />
 
-                        </div>
+                            <QuestionList
+                                quizId={selectedQuizId}
+                                refreshKey={questionRefreshKey}
+                                onEditQuestion={(question) => {
+
+                                    setEditingQuestion(question);
+
+                                }}
+                            />
+
+                        </>
 
                     )}
 
@@ -178,11 +219,13 @@ function QuizList() {
                     >
 
                         <tr>
+
                             <th align="left">Title</th>
                             <th align="left">Category</th>
                             <th align="left">Difficulty</th>
                             <th align="center">Questions</th>
                             <th align="center">Actions</th>
+
                         </tr>
 
                     </thead>
