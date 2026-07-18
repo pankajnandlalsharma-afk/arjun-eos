@@ -1,6 +1,7 @@
 /**
  * ====================================================
  * ARJUN EOS
+ * Quiz Studio
  * Quiz List
  * ====================================================
  */
@@ -9,7 +10,6 @@ import { useEffect, useState } from "react";
 import { QuizController } from "../../../controllers";
 
 function QuizList() {
-
     const [quizzes, setQuizzes] = useState([]);
 
     useEffect(() => {
@@ -18,53 +18,119 @@ function QuizList() {
 
     const loadQuizzes = () => {
         const data = QuizController.getAllQuizzes();
-        setQuizzes(data);
+        setQuizzes(data || []);
     };
 
-    if (quizzes.length === 0) {
-        return (
-            <div>
-                <h2>My Quizzes</h2>
-                <p>No quizzes available.</p>
-            </div>
-        );
-    }
-
     return (
-        <div>
+        <div
+            style={{
+                padding: "25px",
+                fontFamily: "Arial, Helvetica, sans-serif"
+            }}
+        >
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "25px"
+                }}
+            >
+                <div>
+                    <h1 style={{ margin: 0 }}>
+                        📝 Quiz Studio
+                    </h1>
 
-            <h2>My Quizzes</h2>
+                    <p style={{ color: "#666" }}>
+                        Create, manage and organize your quizzes.
+                    </p>
+                </div>
 
-            {quizzes.map((quiz) => (
-                <div
-                    key={quiz.id}
+                <button
                     style={{
-                        border: "1px solid #ccc",
-                        padding: "12px",
-                        marginBottom: "10px",
-                        borderRadius: "6px"
+                        padding: "10px 18px",
+                        cursor: "pointer",
+                        fontSize: "15px"
                     }}
                 >
-                    <h3>{quiz.title}</h3>
+                    + Create Quiz
+                </button>
+            </div>
 
-                    <p>
-                        <strong>Category:</strong> {quiz.category}
-                    </p>
+            {quizzes.length === 0 && (
+                <div
+                    style={{
+                        border: "1px dashed #999",
+                        padding: "40px",
+                        textAlign: "center",
+                        borderRadius: "8px"
+                    }}
+                >
+                    <h2>No quizzes available</h2>
 
-                    <p>
-                        <strong>Difficulty:</strong> {quiz.difficulty}
-                    </p>
-
-                    <p>
-                        <strong>Questions:</strong> {quiz.questions.length}
-                    </p>
-
+                    <p>Create your first quiz to get started.</p>
                 </div>
-            ))}
+            )}
 
+            {quizzes.length > 0 && (
+                <table
+                    width="100%"
+                    cellPadding="12"
+                    style={{
+                        borderCollapse: "collapse",
+                        border: "1px solid #ddd"
+                    }}
+                >
+                    <thead
+                        style={{
+                            background: "#f5f5f5"
+                        }}
+                    >
+                        <tr>
+                            <th align="left">Title</th>
+                            <th align="left">Category</th>
+                            <th align="left">Difficulty</th>
+                            <th align="center">Questions</th>
+                            <th align="center">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {quizzes.map((quiz) => (
+                            <tr
+                                key={quiz.id}
+                                style={{
+                                    borderTop: "1px solid #ddd"
+                                }}
+                            >
+                                <td>{quiz.title}</td>
+
+                                <td>{quiz.category}</td>
+
+                                <td>{quiz.difficulty}</td>
+
+                                <td align="center">
+                                    {quiz.questions.length}
+                                </td>
+
+                                <td align="center">
+                                    <button>Edit</button>
+
+                                    <button
+                                        style={{
+                                            marginLeft: "10px"
+                                        }}
+                                    >
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
-
 }
 
 export default QuizList;
