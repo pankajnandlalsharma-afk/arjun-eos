@@ -35,6 +35,14 @@ class QuizController {
 
     deleteQuiz(id) {
 
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this quiz?"
+        );
+
+        if (!confirmed) {
+            return false;
+        }
+
         return QuizService.deleteQuiz(id);
 
     }
