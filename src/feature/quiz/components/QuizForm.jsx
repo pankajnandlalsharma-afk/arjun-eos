@@ -5,36 +5,70 @@
  * ====================================================
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Quiz } from "../../../models";
 import { QuizController } from "../../../controllers";
 
-function QuizForm({ onQuizCreated }) {
+function QuizForm({ quiz = null, onQuizCreated }) {
 
+    const [id, setId] = useState(null);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("");
     const [difficulty, setDifficulty] = useState("Medium");
 
-    const handleSubmit = (event) => {
+    useEffect(() => {
 
-        event.preventDefault();
+        if (!quiz) {
+            return;
+        }
 
-        const quiz = new Quiz({
-            title,
-            description,
-            category,
-            difficulty
-        });
+        setId(quiz.id);
+        setTitle(quiz.title || "");
+        setDescription(quiz.description || "");
+        setCategory(quiz.category || "");
+        setDifficulty(quiz.difficulty || "Medium");
 
-        QuizController.createQuiz(quiz);
+    }, [quiz]);
 
-        alert("Quiz created successfully.");
+    const resetForm = () => {
 
+        setId(null);
         setTitle("");
         setDescription("");
         setCategory("");
         setDifficulty("Medium");
+
+    };
+
+    const handleSubmit = (event) => {
+
+        event.preventDefault();
+
+        const quizData = new Quiz({
+            id,
+            title,
+            description,
+            category,
+            difficulty,
+            questions: quiz?.questions || []
+        });
+
+        if (id) {
+
+            QuizController.updateQuiz(quizData);
+
+            alert("Quiz updated successfully.");
+
+        } else {
+
+            QuizController.createQuiz(quizData);
+
+            alert("Quiz created successfully.");
+
+        }
+
+        resetForm();
 
         if (onQuizCreated) {
             onQuizCreated();
@@ -43,6 +77,7 @@ function QuizForm({ onQuizCreated }) {
     };
 
     return (
+
         <div
             style={{
                 border: "1px solid #d1d5db",
@@ -51,7 +86,10 @@ function QuizForm({ onQuizCreated }) {
                 marginBottom: "20px"
             }}
         >
-            <h2>Create Quiz</h2>
+
+            <h2>
+                {id ? "Edit Quiz" : "Create Quiz"}
+            </h2>
 
             <form onSubmit={handleSubmit}>
 
@@ -99,11 +137,13 @@ function QuizForm({ onQuizCreated }) {
                 </div>
 
                 <button type="submit">
-                    Save Quiz
+                    {id ? "Update Quiz" : "Save Quiz"}
                 </button>
 
             </form>
+
         </div>
+
     );
 
 }
