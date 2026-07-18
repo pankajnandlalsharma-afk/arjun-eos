@@ -8,9 +8,11 @@
 
 import { useEffect, useState } from "react";
 import { QuizController } from "../../../controllers";
+import QuizForm from "./QuizForm";
 
 function QuizList() {
     const [quizzes, setQuizzes] = useState([]);
+    const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
         loadQuizzes();
@@ -47,15 +49,18 @@ function QuizList() {
                 </div>
 
                 <button
+                    onClick={() => setShowForm(!showForm)}
                     style={{
                         padding: "10px 18px",
                         cursor: "pointer",
                         fontSize: "15px"
                     }}
                 >
-                    + Create Quiz
+                    {showForm ? "Close Form" : "+ Create Quiz"}
                 </button>
             </div>
+
+            {showForm && <QuizForm />}
 
             {quizzes.length === 0 && (
                 <div
