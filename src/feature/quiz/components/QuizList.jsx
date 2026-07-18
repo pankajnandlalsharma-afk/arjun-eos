@@ -9,6 +9,7 @@
 import { useEffect, useState } from "react";
 import { QuizController } from "../../../controllers";
 import QuizForm from "./QuizForm";
+import QuestionForm from "./QuestionForm";
 
 function QuizList() {
     const [quizzes, setQuizzes] = useState([]);
@@ -60,7 +61,19 @@ function QuizList() {
                 </button>
             </div>
 
-            {showForm && <QuizForm />}
+            {showForm && (
+                <>
+                    <QuizForm
+                        onQuizCreated={() => {
+                            loadQuizzes();
+                        }}
+                    />
+
+                    <div style={{ marginTop: "30px" }}>
+                        <QuestionForm />
+                    </div>
+                </>
+            )}
 
             {quizzes.length === 0 && (
                 <div
