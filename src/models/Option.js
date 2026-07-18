@@ -11,25 +11,47 @@ class Option {
         id = crypto.randomUUID(),
         text = "",
         isCorrect = false,
-        explanation = ""
+        explanation = "",
+        image = "",
+        createdAt = new Date().toISOString(),
+        updatedAt = new Date().toISOString()
     } = {}) {
 
         this.id = id;
         this.text = text;
         this.isCorrect = isCorrect;
         this.explanation = explanation;
+        this.image = image;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
 
     }
 
     setText(text) {
 
         this.text = text;
+        this.updatedAt = new Date().toISOString();
 
     }
 
-    setCorrect(isCorrect) {
+    setCorrect(isCorrect = true) {
 
         this.isCorrect = isCorrect;
+        this.updatedAt = new Date().toISOString();
+
+    }
+
+    setExplanation(explanation) {
+
+        this.explanation = explanation;
+        this.updatedAt = new Date().toISOString();
+
+    }
+
+    setImage(image) {
+
+        this.image = image;
+        this.updatedAt = new Date().toISOString();
 
     }
 
