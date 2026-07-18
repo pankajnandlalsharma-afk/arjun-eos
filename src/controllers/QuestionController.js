@@ -41,6 +41,14 @@ class QuestionController {
 
     deleteQuestion(id) {
 
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this question?"
+        );
+
+        if (!confirmed) {
+            return false;
+        }
+
         return QuestionService.deleteQuestion(id);
 
     }
