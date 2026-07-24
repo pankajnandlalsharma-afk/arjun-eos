@@ -106,16 +106,14 @@ class QuestionRepository {
             q => q.id !== id
         );
 
-        const reordered = filtered.map(q => ({ ...q }));
-
         this.normalizeOrder(
-            reordered,
+            filtered,
             question.quizId
         );
 
         DatabaseManager.set(
             COLLECTION,
-            reordered
+            filtered
         );
 
         LoggerManager.info(
@@ -134,7 +132,10 @@ class QuestionRepository {
             return false;
         }
 
-        return this.move(id, (current.order ?? 0) - 1);
+        return this.move(
+            id,
+            (current.order ?? 0) - 1
+        );
 
     }
 
@@ -146,18 +147,21 @@ class QuestionRepository {
             return false;
         }
 
-        return this.move(id, (current.order ?? 0) + 1);
+        return this.move(
+            id,
+            (current.order ?? 0) + 1
+        );
 
     }
 
     move(id, targetIndex) {
 
-        const questions = this.getAll().map(
-            q => ({ ...q })
-        );
+        const questions = this
+            .getAll()
+            .map(question => ({ ...question }));
 
         const current = questions.find(
-            q => q.id === id
+            question => question.id === id
         );
 
         if (!current) {
@@ -165,34 +169,57 @@ class QuestionRepository {
         }
 
         const quizQuestions = questions
-            .filter(q => q.quizId === current.quizId)
+            .filter(
+                question => question.quizId === current.quizId
+            )
             .sort(
                 (a, b) => (a.order ?? 0) - (b.order ?? 0)
             );
 
         const currentIndex = quizQuestions.findIndex(
-            q => q.id === id
+            question => question.id === id
         );
 
-        if (
-            currentIndex === -1 ||
-            targetIndex < 0 ||
-            targetIndex >= quizQuestions.length
-        ) {
+        if (currentIndex === -1) {
             return false;
         }
 
-        const [item] = quizQuestions.splice(currentIndex, 1);
+        if (targetIndex < 0) {
+            targetIndex = 0;
+        }
 
-        quizQuestions.splice(targetIndex, 0, item);
+        if (targetIndex >= quizQuestions.length) {
+            targetIndex = quizQuestions.length - 1;
+        }
+
+        const [movingQuestion] = quizQuestions.splice(
+            currentIndex,
+            1
+        );
+
+        quizQuestions.splice(
+            targetIndex,
+            0,
+            movingQuestion
+        );
 
         quizQuestions.forEach((question, index) => {
             question.order = index;
         });
 
+        const finalQuestions = questions.map(question => {
+
+            const reordered = quizQuestions.find(
+                q => q.id === question.id
+            );
+
+            return reordered ?? question;
+
+        });
+
         DatabaseManager.set(
             COLLECTION,
-            questions
+            finalQuestions
         );
 
         LoggerManager.info(
@@ -206,7 +233,9 @@ class QuestionRepository {
     normalizeOrder(allQuestions, quizId) {
 
         const quizQuestions = allQuestions
-            .filter(q => q.quizId === quizId)
+            .filter(
+                question => question.quizId === quizId
+            )
             .sort(
                 (a, b) => (a.order ?? 0) - (b.order ?? 0)
             );

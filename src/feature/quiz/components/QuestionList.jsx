@@ -43,6 +43,22 @@ function QuestionList({
 
     };
 
+    const handleMoveUp = (id) => {
+
+        QuestionController.moveQuestionUp(id);
+
+        loadQuestions();
+
+    };
+
+    const handleMoveDown = (id) => {
+
+        QuestionController.moveQuestionDown(id);
+
+        loadQuestions();
+
+    };
+
     if (!quizId) {
 
         return (
@@ -156,6 +172,26 @@ function QuestionList({
                                 <td align="center">
 
                                     <button
+                                        disabled={index === 0}
+                                        onClick={() => handleMoveUp(question.id)}
+                                    >
+                                        ⬆
+                                    </button>
+
+                                    <button
+                                        style={{
+                                            marginLeft: "6px"
+                                        }}
+                                        disabled={index === questions.length - 1}
+                                        onClick={() => handleMoveDown(question.id)}
+                                    >
+                                        ⬇
+                                    </button>
+
+                                    <button
+                                        style={{
+                                            marginLeft: "10px"
+                                        }}
                                         onClick={() => onEditQuestion?.(question)}
                                     >
                                         Edit
