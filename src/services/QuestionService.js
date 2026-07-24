@@ -24,7 +24,7 @@ class QuestionService {
             throw new Error("At least two options are required.");
         }
 
-        if (question.correctAnswer === null) {
+        if (question.correctAnswer === null || question.correctAnswer === undefined) {
             throw new Error("Correct answer is required.");
         }
 
@@ -79,6 +79,38 @@ class QuestionService {
         LoggerManager.success(
             `Question deleted: ${id}`
         );
+
+    }
+
+    moveUp(id) {
+
+        const movedQuestion = QuestionRepository.moveUp(id);
+
+        if (!movedQuestion) {
+            throw new Error("Question not found.");
+        }
+
+        LoggerManager.success(
+            `Question moved up: ${id}`
+        );
+
+        return movedQuestion;
+
+    }
+
+    moveDown(id) {
+
+        const movedQuestion = QuestionRepository.moveDown(id);
+
+        if (!movedQuestion) {
+            throw new Error("Question not found.");
+        }
+
+        LoggerManager.success(
+            `Question moved down: ${id}`
+        );
+
+        return movedQuestion;
 
     }
 
