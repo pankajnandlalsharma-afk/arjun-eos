@@ -128,17 +128,29 @@ class QuestionRepository {
 
     moveUp(id) {
 
-        return this.move(id, -1);
+        const current = this.getById(id);
+
+        if (!current) {
+            return false;
+        }
+
+        return this.move(id, (current.order ?? 0) - 1);
 
     }
 
     moveDown(id) {
 
-        return this.move(id, 1);
+        const current = this.getById(id);
+
+        if (!current) {
+            return false;
+        }
+
+        return this.move(id, (current.order ?? 0) + 1);
 
     }
 
-    move(id, direction) {
+    move(id, targetIndex) {
 
         const questions = this.getAll().map(
             q => ({ ...q })
@@ -158,30 +170,25 @@ class QuestionRepository {
                 (a, b) => (a.order ?? 0) - (b.order ?? 0)
             );
 
-        const index = quizQuestions.findIndex(
+        const currentIndex = quizQuestions.findIndex(
             q => q.id === id
         );
 
-        const target = index + direction;
-
         if (
-            target < 0 ||
-            target >= quizQuestions.length
+            currentIndex === -1 ||
+            targetIndex < 0 ||
+            targetIndex >= quizQuestions.length
         ) {
             return false;
         }
 
-        const temp = quizQuestions[index].order;
+        const [item] = quizQuestions.splice(currentIndex, 1);
 
-        quizQuestions[index].order =
-            quizQuestions[target].order;
+        quizQuestions.splice(targetIndex, 0, item);
 
-        quizQuestions[target].order = temp;
-
-        this.normalizeOrder(
-            questions,
-            current.quizId
-        );
+        quizQuestions.forEach((question, index) => {
+            question.order = index;
+        });
 
         DatabaseManager.set(
             COLLECTION,
