@@ -11,7 +11,7 @@ import QuizForm from "./QuizForm";
 import QuestionForm from "./QuestionForm";
 import QuestionList from "./QuestionList";
 
-function QuizList() {
+function QuizStudio() {
 
     const [quizzes, setQuizzes] = useState([]);
     const [showForm, setShowForm] = useState(false);
@@ -27,27 +27,37 @@ function QuizList() {
     }, []);
 
     const loadQuizzes = () => {
+
         const data = QuizController.getAllQuizzes();
+
         setQuizzes(data || []);
+
     };
 
     const refreshQuestions = () => {
+
         setQuestionRefreshKey(previous => previous + 1);
+
         loadQuizzes();
+
     };
 
     const handleCreateQuiz = () => {
+
         setEditingQuiz(null);
         setEditingQuestion(null);
         setSelectedQuizId("");
         setShowForm(true);
+
     };
 
     const handleEditQuiz = (quiz) => {
+
         setEditingQuiz(quiz);
         setEditingQuestion(null);
         setSelectedQuizId("");
         setShowForm(true);
+
     };
 
     const handleDeleteQuiz = (id) => {
@@ -55,15 +65,21 @@ function QuizList() {
         const deleted = QuizController.deleteQuiz(id);
 
         if (deleted !== false) {
+
             loadQuizzes();
+
         }
 
         if (editingQuiz?.id === id) {
+
             setEditingQuiz(null);
+
         }
 
         if (selectedQuizId === id) {
+
             setSelectedQuizId("");
+
         }
 
         setEditingQuestion(null);
@@ -71,10 +87,14 @@ function QuizList() {
     };
 
     const handleAddQuestions = (quiz) => {
+
         setEditingQuiz(null);
         setEditingQuestion(null);
+
         setSelectedQuizId(quiz.id);
+
         setShowForm(true);
+
     };
 
     return (
@@ -113,8 +133,11 @@ function QuizList() {
                         if (showForm) {
 
                             setShowForm(false);
+
                             setEditingQuiz(null);
+
                             setEditingQuestion(null);
+
                             setSelectedQuizId("");
 
                         } else {
@@ -144,6 +167,7 @@ function QuizList() {
                         onQuizCreated={() => {
 
                             loadQuizzes();
+
                             setEditingQuiz(null);
 
                         }}
@@ -159,6 +183,7 @@ function QuizList() {
                                 onQuestionCreated={() => {
 
                                     setEditingQuestion(null);
+
                                     refreshQuestions();
 
                                 }}
@@ -182,14 +207,15 @@ function QuizList() {
 
             )}
 
-            {quizzes.length === 0 && (
+            {quizzes.length === 0 ? (
 
                 <div
                     style={{
-                        border: "1px dashed #999",
+                        marginTop: "20px",
                         padding: "40px",
-                        textAlign: "center",
-                        borderRadius: "8px"
+                        border: "1px dashed #999",
+                        borderRadius: "8px",
+                        textAlign: "center"
                     }}
                 >
 
@@ -199,14 +225,13 @@ function QuizList() {
 
                 </div>
 
-            )}
-
-            {quizzes.length > 0 && (
+            ) : (
 
                 <table
                     width="100%"
                     cellPadding="12"
                     style={{
+                        marginTop: "20px",
                         borderCollapse: "collapse",
                         border: "1px solid #ddd"
                     }}
@@ -221,9 +246,13 @@ function QuizList() {
                         <tr>
 
                             <th align="left">Title</th>
+
                             <th align="left">Category</th>
+
                             <th align="left">Difficulty</th>
+
                             <th align="center">Questions</th>
+
                             <th align="center">Actions</th>
 
                         </tr>
@@ -242,9 +271,16 @@ function QuizList() {
                             >
 
                                 <td>{quiz.title}</td>
+
                                 <td>{quiz.category}</td>
+
                                 <td>{quiz.difficulty}</td>
-                                <td align="center">{quiz.questions.length}</td>
+
+                                <td align="center">
+
+                                    {quiz.questions?.length || 0}
+
+                                </td>
 
                                 <td align="center">
 
@@ -255,14 +291,18 @@ function QuizList() {
                                     </button>
 
                                     <button
-                                        style={{ marginLeft: "10px" }}
+                                        style={{
+                                            marginLeft: "10px"
+                                        }}
                                         onClick={() => handleEditQuiz(quiz)}
                                     >
                                         Edit
                                     </button>
 
                                     <button
-                                        style={{ marginLeft: "10px" }}
+                                        style={{
+                                            marginLeft: "10px"
+                                        }}
                                         onClick={() => handleDeleteQuiz(quiz.id)}
                                     >
                                         Delete
@@ -286,4 +326,4 @@ function QuizList() {
 
 }
 
-export default QuizList;
+export default QuizStudio;

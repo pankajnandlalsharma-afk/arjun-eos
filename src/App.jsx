@@ -15,8 +15,8 @@ import KnowledgeImport from "./components/KnowledgeImport";
 
 import LegalDocumentImportStudio from "./studio/LegalDocumentImportStudio";
 
-// NEW
-import QuizList from "./feature/quiz/components/QuizList";
+// Quiz Studio
+import QuizStudio from "./feature/quiz/components/QuizStudio";
 
 export default function App() {
 
@@ -70,7 +70,6 @@ export default function App() {
                 ⚖️ Legal Studio
             </button>
 
-            {/* NEW */}
             <button onClick={() => setCurrentPage("quizstudio")}>
                 📝 Quiz Studio
             </button>
@@ -99,9 +98,7 @@ export default function App() {
 
             {currentPage === "legalstudio" && <LegalDocumentImportStudio />}
 
-            {/* NEW */}
-            {currentPage === "quizstudio" && <QuizList />}
-
+            {currentPage === "quizstudio" && <QuizStudio />}
         </>
     );
 
