@@ -65,6 +65,12 @@ class QuestionController {
 
     }
 
+    moveQuestion(id, targetIndex) {
+
+        return QuestionService.move(id, targetIndex);
+
+    }
+
     totalQuestions() {
 
         return QuestionService.totalQuestions();
