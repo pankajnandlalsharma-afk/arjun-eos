@@ -24,7 +24,10 @@ class QuestionService {
             throw new Error("At least two options are required.");
         }
 
-        if (question.correctAnswer === null || question.correctAnswer === undefined) {
+        if (
+            question.correctAnswer === null ||
+            question.correctAnswer === undefined
+        ) {
             throw new Error("Correct answer is required.");
         }
 
@@ -58,7 +61,8 @@ class QuestionService {
 
     updateQuestion(question) {
 
-        const updatedQuestion = QuestionRepository.update(question);
+        const updatedQuestion =
+            QuestionRepository.update(question);
 
         if (!updatedQuestion) {
             throw new Error("Question not found.");
@@ -84,9 +88,9 @@ class QuestionService {
 
     moveUp(id) {
 
-        const movedQuestion = QuestionRepository.moveUp(id);
+        const moved = QuestionRepository.moveUp(id);
 
-        if (!movedQuestion) {
+        if (!moved) {
             throw new Error("Question not found.");
         }
 
@@ -94,15 +98,15 @@ class QuestionService {
             `Question moved up: ${id}`
         );
 
-        return movedQuestion;
+        return moved;
 
     }
 
     moveDown(id) {
 
-        const movedQuestion = QuestionRepository.moveDown(id);
+        const moved = QuestionRepository.moveDown(id);
 
-        if (!movedQuestion) {
+        if (!moved) {
             throw new Error("Question not found.");
         }
 
@@ -110,7 +114,26 @@ class QuestionService {
             `Question moved down: ${id}`
         );
 
-        return movedQuestion;
+        return moved;
+
+    }
+
+    move(id, targetIndex) {
+
+        const moved = QuestionRepository.move(
+            id,
+            targetIndex
+        );
+
+        if (!moved) {
+            throw new Error("Question reorder failed.");
+        }
+
+        LoggerManager.success(
+            `Question moved to position ${targetIndex}`
+        );
+
+        return moved;
 
     }
 
