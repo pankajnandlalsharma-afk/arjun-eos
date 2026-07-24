@@ -53,6 +53,18 @@ class QuestionController {
 
     }
 
+    moveQuestionUp(id) {
+
+        return QuestionService.moveUp(id);
+
+    }
+
+    moveQuestionDown(id) {
+
+        return QuestionService.moveDown(id);
+
+    }
+
     totalQuestions() {
 
         return QuestionService.totalQuestions();
