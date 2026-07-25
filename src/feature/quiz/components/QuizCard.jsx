@@ -16,91 +16,119 @@ function QuizCard({
         return null;
     }
 
+    const totalQuestions = quiz.questions?.length || 0;
+
+    const difficultyColor =
+        quiz.difficulty === "Easy"
+            ? "#16a34a"
+            : quiz.difficulty === "Medium"
+                ? "#f59e0b"
+                : "#dc2626";
+
     return (
 
         <div
             style={{
                 border: "1px solid #d1d5db",
-                borderRadius: "10px",
+                borderRadius: "12px",
                 padding: "20px",
                 marginBottom: "20px",
-                background: "#ffffff"
+                background: "#ffffff",
+                boxShadow: "0 2px 6px rgba(0,0,0,0.08)"
             }}
         >
 
-            <h3
+            <div
                 style={{
-                    marginTop: 0,
-                    marginBottom: "10px"
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start"
                 }}
             >
-                {quiz.title}
-            </h3>
 
-            <p
-                style={{
-                    margin: "8px 0"
-                }}
-            >
-                <strong>Description:</strong>{" "}
-                {quiz.description || "-"}
-            </p>
+                <div>
 
-            <p
-                style={{
-                    margin: "8px 0"
-                }}
-            >
-                <strong>Category:</strong>{" "}
-                {quiz.category || "-"}
-            </p>
+                    <h3
+                        style={{
+                            marginTop: 0,
+                            marginBottom: "8px"
+                        }}
+                    >
+                        {quiz.title}
+                    </h3>
 
-            <p
-                style={{
-                    margin: "8px 0"
-                }}
-            >
-                <strong>Difficulty:</strong>{" "}
-                {quiz.difficulty}
-            </p>
+                    <p
+                        style={{
+                            color: "#666",
+                            margin: 0
+                        }}
+                    >
+                        {quiz.description || "No description available."}
+                    </p>
 
-            <p
-                style={{
-                    margin: "8px 0"
-                }}
-            >
-                <strong>Total Questions:</strong>{" "}
-                {quiz.questions?.length || 0}
-            </p>
+                </div>
+
+                <span
+                    style={{
+                        background: difficultyColor,
+                        color: "#fff",
+                        padding: "6px 12px",
+                        borderRadius: "20px",
+                        fontSize: "12px",
+                        fontWeight: "bold"
+                    }}
+                >
+                    {quiz.difficulty}
+                </span>
+
+            </div>
 
             <div
                 style={{
-                    marginTop: "18px"
+                    display: "flex",
+                    gap: "30px",
+                    marginTop: "20px",
+                    marginBottom: "20px",
+                    flexWrap: "wrap"
+                }}
+            >
+
+                <div>
+                    <strong>Category</strong>
+                    <div>{quiz.category || "-"}</div>
+                </div>
+
+                <div>
+                    <strong>Questions</strong>
+                    <div>{totalQuestions}</div>
+                </div>
+
+            </div>
+
+            <div
+                style={{
+                    display: "flex",
+                    gap: "10px",
+                    flexWrap: "wrap"
                 }}
             >
 
                 <button
                     onClick={() => onPlay?.(quiz)}
                 >
-                    ▶ Play
+                    ▶ Play Quiz
                 </button>
 
                 <button
-                    style={{
-                        marginLeft: "10px"
-                    }}
                     onClick={() => onEdit?.(quiz)}
                 >
-                    Edit
+                    ✏ Edit
                 </button>
 
                 <button
-                    style={{
-                        marginLeft: "10px"
-                    }}
                     onClick={() => onDelete?.(quiz)}
                 >
-                    Delete
+                    🗑 Delete
                 </button>
 
             </div>
