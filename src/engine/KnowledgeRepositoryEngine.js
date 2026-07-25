@@ -1,3 +1,4 @@
+import { build } from "pdfjs-dist";
 import Enterprise from "../models/Enterprise";
 
 export default class KnowledgeRepositoryEngine {

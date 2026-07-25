@@ -1,3 +1,5 @@
+import { build } from "pdfjs-dist";
+
 export default class QuizEnterpriseEngine {
     constructor() {
         this.name = "Quiz Enterprise";
@@ -22,4 +24,4 @@ export default class QuizEnterpriseEngine {
             totalModules: this.modules.length
         };
     }
-}
+}no
