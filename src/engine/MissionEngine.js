@@ -1,77 +1,156 @@
 export default class MissionEngine {
-
     constructor() {
+        this.missions = [];
+    }
 
-        this.activeMission = {
-            name: "100 Channel Mission",
-            targetChannels: 100,
+    createMission({
+        name,
+        targetChannels = 100,
+        targetDate,
+        segments = [],
+        description = ""
+    }) {
+        const mission = {
+            id: crypto.randomUUID(),
+
+            name,
+
+            description,
+
+            targetChannels,
+
             completedChannels: 0,
-            targetDate: "2026-07-15",
-            status: "Running"
+
+            targetDate,
+
+            segments,
+
+            currentSegmentIndex: 0,
+
+            status: "CREATED",
+
+            createdAt: new Date().toISOString(),
+
+            updatedAt: new Date().toISOString()
         };
 
-        this.segments = [
-            "Law",
-            "Bhagavad Gita",
-            "ISKCON",
-            "Finance",
-            "AI",
-            "Education",
-            "Health",
-            "Business",
-            "Motivation",
-            "Kids"
-        ];
+        this.missions.push(mission);
 
+        return mission;
     }
 
-    getMission() {
-        return this.activeMission;
+    getMission(id) {
+        return this.missions.find(m => m.id === id);
     }
 
-    getSegments() {
-        return this.segments;
+    getAllMissions() {
+        return [...this.missions];
     }
 
-    getProgress() {
+    startMission(id) {
+        const mission = this.getMission(id);
+
+        if (!mission)
+            throw new Error("Mission not found");
+
+        mission.status = "RUNNING";
+        mission.updatedAt = new Date().toISOString();
+
+        return mission;
+    }
+
+    completeChannel(id) {
+        const mission = this.getMission(id);
+
+        if (!mission)
+            throw new Error("Mission not found");
+
+        if (mission.completedChannels < mission.targetChannels) {
+            mission.completedChannels++;
+        }
+
+        if (mission.completedChannels >= mission.targetChannels) {
+            mission.status = "COMPLETED";
+        }
+
+        mission.updatedAt = new Date().toISOString();
+
+        return mission;
+    }
+
+    getProgress(id) {
+        const mission = this.getMission(id);
+
+        if (!mission)
+            return 0;
+
+        return Number(
+            (
+                (mission.completedChannels /
+                    mission.targetChannels) *
+                100
+            ).toFixed(2)
+        );
+    }
+
+    getNextSegment(id) {
+        const mission = this.getMission(id);
+
+        if (!mission)
+            return null;
 
         return (
-            this.activeMission.completedChannels /
-            this.activeMission.targetChannels
-        ) * 100;
-
+            mission.segments[
+                mission.currentSegmentIndex
+            ] || null
+        );
     }
 
-    completeChannel() {
+    moveToNextSegment(id) {
+        const mission = this.getMission(id);
 
-        this.activeMission.completedChannels++;
+        if (!mission)
+            return null;
 
+        if (
+            mission.currentSegmentIndex <
+            mission.segments.length - 1
+        ) {
+            mission.currentSegmentIndex++;
+        }
+
+        mission.updatedAt = new Date().toISOString();
+
+        return this.getNextSegment(id);
     }
 
-    getNextSegment() {
+    generateMissionReport(id) {
+        const mission = this.getMission(id);
 
-        return this.segments[0];
-
-    }
-
-    missionReport() {
+        if (!mission)
+            return null;
 
         return {
+            id: mission.id,
 
-            mission: this.activeMission.name,
+            name: mission.name,
 
-            progress: this.getProgress(),
+            status: mission.status,
 
-            remaining:
+            progress: this.getProgress(id),
 
-                this.activeMission.targetChannels -
+            completedChannels:
+                mission.completedChannels,
 
-                this.activeMission.completedChannels,
+            remainingChannels:
+                mission.targetChannels -
+                mission.completedChannels,
 
-            deadline: this.activeMission.targetDate
+            nextSegment:
+                this.getNextSegment(id),
 
+            deadline:
+                mission.targetDate
         };
-
     }
-
 }
