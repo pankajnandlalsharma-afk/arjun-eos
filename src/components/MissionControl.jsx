@@ -1,85 +1,140 @@
+import { useEffect, useState } from "react";
+import { MissionController } from "../controllers";
+
 export default function MissionControl() {
 
-  const missions = [
-    {
-      id: 1,
-      mission: "Launch First YouTube Channel",
-      status: "Running",
-      progress: "20%",
-      deadline: "15 Jul 2026"
-    },
-    {
-      id: 2,
-      mission: "Build Content Factory",
-      status: "Running",
-      progress: "15%",
-      deadline: "20 Jul 2026"
-    },
-    {
-      id: 3,
-      mission: "Knowledge Center",
-      status: "Pending",
-      progress: "0%",
-      deadline: "18 Jul 2026"
+    const controller = new MissionController();
+
+    const [missions, setMissions] = useState([]);
+
+    useEffect(() => {
+        loadMissions();
+    }, []);
+
+    function loadMissions() {
+        const data = controller.getAllMissions();
+        setMissions(data);
     }
-  ];
 
-  return (
-    <div style={{ padding: "25px" }}>
+    function createDemoMission() {
 
-      <h1>🚀 Mission Control</h1>
+        controller.createMission({
 
-      <table
-        border="1"
-        cellPadding="10"
-        style={{
-          width: "100%",
-          borderCollapse: "collapse"
-        }}
-      >
+            name: "100 Channel Mission",
 
-        <thead>
+            description: "Launch 100 YouTube Channels",
 
-          <tr>
+            targetChannels: 100,
 
-            <th>ID</th>
+            targetDate: "2026-12-31",
 
-            <th>Mission</th>
+            segments: [
+                "Law",
+                "Bhagavad Gita",
+                "Finance",
+                "AI",
+                "Kids"
+            ]
 
-            <th>Status</th>
+        });
 
-            <th>Progress</th>
+        loadMissions();
+    }
 
-            <th>Deadline</th>
+    return (
 
-          </tr>
+        <div style={{ padding: 25 }}>
 
-        </thead>
+            <h1>🚀 Mission Control</h1>
 
-        <tbody>
+            <button
+                onClick={createDemoMission}
+                style={{
+                    padding: "10px 18px",
+                    marginBottom: 20,
+                    cursor: "pointer"
+                }}
+            >
+                Create Demo Mission
+            </button>
 
-          {missions.map((mission) => (
+            <table
+                border="1"
+                cellPadding="10"
+                style={{
+                    width: "100%",
+                    borderCollapse: "collapse"
+                }}
+            >
 
-            <tr key={mission.id}>
+                <thead>
 
-              <td>{mission.id}</td>
+                    <tr>
 
-              <td>{mission.mission}</td>
+                        <th>ID</th>
 
-              <td>{mission.status}</td>
+                        <th>Mission</th>
 
-              <td>{mission.progress}</td>
+                        <th>Status</th>
 
-              <td>{mission.deadline}</td>
+                        <th>Progress</th>
 
-            </tr>
+                        <th>Deadline</th>
 
-          ))}
+                    </tr>
 
-        </tbody>
+                </thead>
 
-      </table>
+                <tbody>
 
-    </div>
-  );
+                    {missions.length === 0 && (
+
+                        <tr>
+
+                            <td
+                                colSpan="5"
+                                style={{
+                                    textAlign: "center",
+                                    padding: 20
+                                }}
+                            >
+                                No Missions Found
+                            </td>
+
+                        </tr>
+
+                    )}
+
+                    {missions.map((mission) => (
+
+                        <tr key={mission.id}>
+
+                            <td>{mission.id.substring(0,8)}</td>
+
+                            <td>{mission.name}</td>
+
+                            <td>{mission.status}</td>
+
+                            <td>
+
+                                {mission.completedChannels} /
+                                {" "}
+                                {mission.targetChannels}
+
+                            </td>
+
+                            <td>{mission.targetDate}</td>
+
+                        </tr>
+
+                    ))}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    );
+
 }
