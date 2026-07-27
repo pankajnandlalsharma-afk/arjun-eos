@@ -10,6 +10,7 @@
 
 import { useEffect, useState } from "react";
 import { MissionController } from "../controllers";
+import MissionStats from "../feature/quiz/components/MissionStats";
 
 export default function MissionControl() {
 
@@ -37,7 +38,9 @@ export default function MissionControl() {
 
     function loadMissions() {
 
-        setMissions(controller.getAllMissions());
+        const data = controller.getAllMissions();
+
+        setMissions(data);
 
     }
 
@@ -104,9 +107,12 @@ export default function MissionControl() {
 
             <h1>🚀 Mission Control</h1>
 
+            <MissionStats missions={missions} />
+
             <div
                 style={{
                     border: "1px solid #ccc",
+                    borderRadius: 8,
                     padding: 20,
                     marginBottom: 30
                 }}
@@ -121,7 +127,10 @@ export default function MissionControl() {
                         placeholder="Mission Name"
                         value={form.name}
                         onChange={handleChange}
-                        style={{ width: "100%", padding: 10 }}
+                        style={{
+                            width: "100%",
+                            padding: 10
+                        }}
                     />
 
                 </p>
@@ -190,7 +199,7 @@ export default function MissionControl() {
                 <button
                     onClick={createMission}
                     style={{
-                        padding: "12px 20px",
+                        padding: "12px 24px",
                         cursor: "pointer"
                     }}
                 >
@@ -230,7 +239,7 @@ export default function MissionControl() {
 
                 <tbody>
 
-                    {missions.length === 0 && (
+                    {missions.length === 0 ? (
 
                         <tr>
 
@@ -246,29 +255,33 @@ export default function MissionControl() {
 
                         </tr>
 
+                    ) : (
+
+                        missions.map((mission) => (
+
+                            <tr key={mission.id}>
+
+                                <td>{mission.id.substring(0, 8)}</td>
+
+                                <td>{mission.name}</td>
+
+                                <td>{mission.status}</td>
+
+                                <td>
+
+                                    {mission.completedChannels}
+                                    {" / "}
+                                    {mission.targetChannels}
+
+                                </td>
+
+                                <td>{mission.targetDate}</td>
+
+                            </tr>
+
+                        ))
+
                     )}
-
-                    {missions.map((mission) => (
-
-                        <tr key={mission.id}>
-
-                            <td>{mission.id.substring(0, 8)}</td>
-
-                            <td>{mission.name}</td>
-
-                            <td>{mission.status}</td>
-
-                            <td>
-                                {mission.completedChannels}
-                                {" / "}
-                                {mission.targetChannels}
-                            </td>
-
-                            <td>{mission.targetDate}</td>
-
-                        </tr>
-
-                    ))}
 
                 </tbody>
 
