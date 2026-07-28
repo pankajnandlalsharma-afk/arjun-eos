@@ -1,289 +1,53 @@
-/**
- * ====================================================
- * ARJUN EOS
- * Mission Control
- *
- * Description:
- * Mission Management Dashboard
- * ====================================================
- */
+export default function MissionStats({ missions }) {
+    const total = missions.length;
 
-import { useEffect, useState } from "react";
-import { MissionController } from "../controllers";
-import MissionStats from "./MissionStats";
+    const created = missions.filter(
+        m => m.status === "CREATED"
+    ).length;
 
-export default function MissionControl() {
+    const running = missions.filter(
+        m => m.status === "RUNNING"
+    ).length;
 
-    const controller = new MissionController();
-
-    const [missions, setMissions] = useState([]);
-
-    const [form, setForm] = useState({
-
-        name: "",
-
-        description: "",
-
-        targetChannels: 100,
-
-        targetDate: "",
-
-        segments: ""
-
-    });
-
-    useEffect(() => {
-        loadMissions();
-    }, []);
-
-    function loadMissions() {
-
-        setMissions(controller.getAllMissions());
-
-    }
-
-    function handleChange(event) {
-
-        setForm({
-
-            ...form,
-
-            [event.target.name]: event.target.value
-
-        });
-
-    }
-
-    function createMission() {
-
-        if (!form.name.trim()) {
-
-            alert("Mission Name is required");
-
-            return;
-
-        }
-
-        controller.createMission({
-
-            name: form.name,
-
-            description: form.description,
-
-            targetChannels: Number(form.targetChannels),
-
-            targetDate: form.targetDate,
-
-            segments: form.segments
-                .split(",")
-                .map(segment => segment.trim())
-                .filter(segment => segment !== "")
-
-        });
-
-        setForm({
-
-            name: "",
-
-            description: "",
-
-            targetChannels: 100,
-
-            targetDate: "",
-
-            segments: ""
-
-        });
-
-        loadMissions();
-
-    }
+    const completed = missions.filter(
+        m => m.status === "COMPLETED"
+    ).length;
 
     return (
-
-        <div style={{ padding: 25 }}>
-
-            <h1>🚀 Mission Control</h1>
-
-            <MissionStats missions={missions} />
-
-            <div
-                style={{
-                    border: "1px solid #ccc",
-                    padding: 20,
-                    marginBottom: 30
-                }}
-            >
-
-                <h2>Create Mission</h2>
-
-                <p>
-
-                    <input
-                        name="name"
-                        placeholder="Mission Name"
-                        value={form.name}
-                        onChange={handleChange}
-                        style={{
-                            width: "100%",
-                            padding: 10
-                        }}
-                    />
-
-                </p>
-
-                <p>
-
-                    <textarea
-                        name="description"
-                        placeholder="Description"
-                        value={form.description}
-                        onChange={handleChange}
-                        rows={3}
-                        style={{
-                            width: "100%",
-                            padding: 10
-                        }}
-                    />
-
-                </p>
-
-                <p>
-
-                    <input
-                        type="number"
-                        name="targetChannels"
-                        value={form.targetChannels}
-                        onChange={handleChange}
-                        style={{
-                            width: "100%",
-                            padding: 10
-                        }}
-                    />
-
-                </p>
-
-                <p>
-
-                    <input
-                        type="date"
-                        name="targetDate"
-                        value={form.targetDate}
-                        onChange={handleChange}
-                        style={{
-                            width: "100%",
-                            padding: 10
-                        }}
-                    />
-
-                </p>
-
-                <p>
-
-                    <input
-                        name="segments"
-                        placeholder="Law, AI, Finance, Kids"
-                        value={form.segments}
-                        onChange={handleChange}
-                        style={{
-                            width: "100%",
-                            padding: 10
-                        }}
-                    />
-
-                </p>
-
-                <button
-                    onClick={createMission}
-                    style={{
-                        padding: "12px 20px",
-                        cursor: "pointer"
-                    }}
-                >
-                    Create Mission
-                </button>
-
-            </div>
-
-            <h2>Mission List</h2>
-
-            <table
-                border="1"
-                cellPadding="10"
-                style={{
-                    width: "100%",
-                    borderCollapse: "collapse"
-                }}
-            >
-
-                <thead>
-
-                    <tr>
-
-                        <th>ID</th>
-
-                        <th>Name</th>
-
-                        <th>Status</th>
-
-                        <th>Progress</th>
-
-                        <th>Deadline</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {missions.length === 0 && (
-
-                        <tr>
-
-                            <td
-                                colSpan="5"
-                                style={{
-                                    textAlign: "center",
-                                    padding: 20
-                                }}
-                            >
-                                No Missions Available
-                            </td>
-
-                        </tr>
-
-                    )}
-
-                    {missions.map((mission) => (
-
-                        <tr key={mission.id}>
-
-                            <td>{mission.id.substring(0, 8)}</td>
-
-                            <td>{mission.name}</td>
-
-                            <td>{mission.status}</td>
-
-                            <td>
-
-                                {mission.completedChannels}
-                                {" / "}
-                                {mission.targetChannels}
-
-                            </td>
-
-                            <td>{mission.targetDate}</td>
-
-                        </tr>
-
-                    ))}
-
-                </tbody>
-
-            </table>
-
+        <div
+            style={{
+                display: "flex",
+                gap: 20,
+                marginBottom: 25,
+                flexWrap: "wrap"
+            }}
+        >
+            <StatCard title="Total Missions" value={total} />
+            <StatCard title="Created" value={created} />
+            <StatCard title="Running" value={running} />
+            <StatCard title="Completed" value={completed} />
         </div>
-
     );
+}
 
+function StatCard({ title, value }) {
+    return (
+        <div
+            style={{
+                flex: 1,
+                minWidth: 180,
+                border: "1px solid #ddd",
+                borderRadius: 8,
+                padding: 20,
+                textAlign: "center",
+                background: "#fafafa"
+            }}
+        >
+            <h3 style={{ margin: 0 }}>{title}</h3>
+
+            <h1 style={{ margin: "10px 0" }}>
+                {value}
+            </h1>
+        </div>
+    );
 }

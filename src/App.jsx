@@ -12,6 +12,7 @@ import SOPLibrary from "./components/SOPLibrary";
 import KnowledgeBase from "./components/KnowledgeBase";
 import Projects from "./components/Projects";
 import KnowledgeImport from "./components/KnowledgeImport";
+import MissionControl from "./components/MissionControl";
 
 import LegalDocumentImportStudio from "./studio/LegalDocumentImportStudio";
 
@@ -66,6 +67,10 @@ export default function App() {
                 Knowledge Import
             </button>
 
+            <button onClick={() => setCurrentPage("mission")}>
+                🎯 Mission Control
+            </button>
+
             <button onClick={() => setCurrentPage("legalstudio")}>
                 ⚖️ Legal Studio
             </button>
@@ -95,6 +100,8 @@ export default function App() {
             {currentPage === "projects" && <Projects />}
 
             {currentPage === "knowledgeimport" && <KnowledgeImport />}
+
+            {currentPage === "mission" && <MissionControl />}
 
             {currentPage === "legalstudio" && <LegalDocumentImportStudio />}
 
