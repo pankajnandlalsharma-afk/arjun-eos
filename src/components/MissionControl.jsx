@@ -19,17 +19,11 @@ export default function MissionControl() {
     const [missions, setMissions] = useState([]);
 
     const [form, setForm] = useState({
-
         name: "",
-
         description: "",
-
         targetChannels: 100,
-
         targetDate: "",
-
         segments: ""
-
     });
 
     useEffect(() => {
@@ -37,68 +31,57 @@ export default function MissionControl() {
     }, []);
 
     function loadMissions() {
-
         const data = controller.getAllMissions();
-
         setMissions(data);
-
     }
 
     function handleChange(event) {
-
         setForm({
-
             ...form,
-
             [event.target.name]: event.target.value
-
         });
-
     }
 
     function createMission() {
 
         if (!form.name.trim()) {
-
             alert("Mission Name is required");
-
             return;
-
         }
 
         controller.createMission({
-
             name: form.name,
-
             description: form.description,
-
             targetChannels: Number(form.targetChannels),
-
             targetDate: form.targetDate,
-
             segments: form.segments
                 .split(",")
                 .map(segment => segment.trim())
                 .filter(segment => segment !== "")
-
         });
 
         setForm({
-
             name: "",
-
             description: "",
-
             targetChannels: 100,
-
             targetDate: "",
-
             segments: ""
-
         });
 
         loadMissions();
+    }
 
+    function deleteMission(id) {
+
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this mission?"
+        );
+
+        if (!confirmed) return;
+
+        controller.deleteMission(id);
+
+        loadMissions();
     }
 
     return (
@@ -121,7 +104,6 @@ export default function MissionControl() {
                 <h2>Create Mission</h2>
 
                 <p>
-
                     <input
                         name="name"
                         placeholder="Mission Name"
@@ -132,11 +114,9 @@ export default function MissionControl() {
                             padding: 10
                         }}
                     />
-
                 </p>
 
                 <p>
-
                     <textarea
                         name="description"
                         placeholder="Description"
@@ -148,11 +128,9 @@ export default function MissionControl() {
                             padding: 10
                         }}
                     />
-
                 </p>
 
                 <p>
-
                     <input
                         type="number"
                         name="targetChannels"
@@ -163,11 +141,9 @@ export default function MissionControl() {
                             padding: 10
                         }}
                     />
-
                 </p>
 
                 <p>
-
                     <input
                         type="date"
                         name="targetDate"
@@ -178,11 +154,9 @@ export default function MissionControl() {
                             padding: 10
                         }}
                     />
-
                 </p>
 
                 <p>
-
                     <input
                         name="segments"
                         placeholder="Law, AI, Finance, Kids"
@@ -193,7 +167,6 @@ export default function MissionControl() {
                             padding: 10
                         }}
                     />
-
                 </p>
 
                 <button
@@ -222,17 +195,12 @@ export default function MissionControl() {
                 <thead>
 
                     <tr>
-
                         <th>ID</th>
-
                         <th>Name</th>
-
                         <th>Status</th>
-
                         <th>Progress</th>
-
                         <th>Deadline</th>
-
+                        <th>Actions</th>
                     </tr>
 
                 </thead>
@@ -244,7 +212,7 @@ export default function MissionControl() {
                         <tr>
 
                             <td
-                                colSpan="5"
+                                colSpan="6"
                                 style={{
                                     textAlign: "center",
                                     padding: 20
@@ -268,14 +236,30 @@ export default function MissionControl() {
                                 <td>{mission.status}</td>
 
                                 <td>
-
                                     {mission.completedChannels}
                                     {" / "}
                                     {mission.targetChannels}
-
                                 </td>
 
                                 <td>{mission.targetDate}</td>
+
+                                <td>
+
+                                    <button
+                                        onClick={() => deleteMission(mission.id)}
+                                        style={{
+                                            background: "#dc3545",
+                                            color: "white",
+                                            border: "none",
+                                            borderRadius: 4,
+                                            padding: "8px 14px",
+                                            cursor: "pointer"
+                                        }}
+                                    >
+                                        Delete
+                                    </button>
+
+                                </td>
 
                             </tr>
 
