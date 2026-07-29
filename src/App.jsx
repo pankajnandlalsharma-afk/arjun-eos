@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import Header from "./Header";
+import AppLayout from "./layouts/AppLayout";
 
 import Dashboard from "./components/Dashboard";
 import AIAgents from "./components/AIAgents";
@@ -16,97 +17,75 @@ import MissionControl from "./components/MissionControl";
 
 import LegalDocumentImportStudio from "./studio/LegalDocumentImportStudio";
 
-// Quiz Studio
 import QuizStudio from "./feature/quiz/components/QuizStudio";
 
 export default function App() {
 
     const [currentPage, setCurrentPage] = useState("dashboard");
 
+    const renderPage = () => {
+
+        switch (currentPage) {
+
+            case "dashboard":
+                return <Dashboard />;
+
+            case "aiagents":
+                return <AIAgents />;
+
+            case "segments":
+                return <SegmentFactory />;
+
+            case "channels":
+                return <ChannelExplorer />;
+
+            case "production":
+                return <ProductionTracker />;
+
+            case "prompts":
+                return <PromptLibrary />;
+
+            case "sop":
+                return <SOPLibrary />;
+
+            case "knowledge":
+                return <KnowledgeBase />;
+
+            case "knowledgeimport":
+                return <KnowledgeImport />;
+
+            case "projects":
+                return <Projects />;
+
+            case "mission":
+                return <MissionControl />;
+
+            case "legalstudio":
+                return <LegalDocumentImportStudio />;
+
+            case "quizstudio":
+                return <QuizStudio />;
+
+            default:
+                return <Dashboard />;
+
+        }
+
+    };
+
     return (
-        <>
+
+        <AppLayout
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+        >
+
             <Header />
 
-            <button onClick={() => setCurrentPage("dashboard")}>
-                Dashboard
-            </button>
+            {renderPage()}
 
-            <button onClick={() => setCurrentPage("aiagents")}>
-                AI Agents
-            </button>
+        </AppLayout>
 
-            <button onClick={() => setCurrentPage("segments")}>
-                Segment Factory
-            </button>
-
-            <button onClick={() => setCurrentPage("channels")}>
-                Channel Explorer
-            </button>
-
-            <button onClick={() => setCurrentPage("production")}>
-                Production Tracker
-            </button>
-
-            <button onClick={() => setCurrentPage("prompts")}>
-                Prompt Library
-            </button>
-
-            <button onClick={() => setCurrentPage("sop")}>
-                SOP Library
-            </button>
-
-            <button onClick={() => setCurrentPage("knowledge")}>
-                Knowledge Base
-            </button>
-
-            <button onClick={() => setCurrentPage("projects")}>
-                Projects
-            </button>
-
-            <button onClick={() => setCurrentPage("knowledgeimport")}>
-                Knowledge Import
-            </button>
-
-            <button onClick={() => setCurrentPage("mission")}>
-                🎯 Mission Control
-            </button>
-
-            <button onClick={() => setCurrentPage("legalstudio")}>
-                ⚖️ Legal Studio
-            </button>
-
-            <button onClick={() => setCurrentPage("quizstudio")}>
-                📝 Quiz Studio
-            </button>
-
-            <hr />
-
-            {currentPage === "dashboard" && <Dashboard />}
-
-            {currentPage === "aiagents" && <AIAgents />}
-
-            {currentPage === "segments" && <SegmentFactory />}
-
-            {currentPage === "channels" && <ChannelExplorer />}
-
-            {currentPage === "production" && <ProductionTracker />}
-
-            {currentPage === "prompts" && <PromptLibrary />}
-
-            {currentPage === "sop" && <SOPLibrary />}
-
-            {currentPage === "knowledge" && <KnowledgeBase />}
-
-            {currentPage === "projects" && <Projects />}
-
-            {currentPage === "knowledgeimport" && <KnowledgeImport />}
-
-            {currentPage === "mission" && <MissionControl />}
-
-            {currentPage === "legalstudio" && <LegalDocumentImportStudio />}
-
-            {currentPage === "quizstudio" && <QuizStudio />}
-        </>
     );
 
 }
