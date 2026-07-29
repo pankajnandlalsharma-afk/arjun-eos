@@ -1,8 +1,17 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 import AppLayout from "./layouts/AppLayout";
 
-import Dashboard from "./components/Dashboard";
+/* ===========================
+   DASHBOARD
+=========================== */
+
+import Dashboard from "./dashboard/Dashboard";
+
+/* ===========================
+   ENTERPRISE MODULES
+=========================== */
+
 import AIAgents from "./components/AIAgents";
 import SegmentFactory from "./components/SegmentFactory";
 import ChannelExplorer from "./components/ChannelExplorer";
@@ -10,68 +19,69 @@ import ProductionTracker from "./components/ProductionTracker";
 import PromptLibrary from "./components/PromptLibrary";
 import SOPLibrary from "./components/SOPLibrary";
 import KnowledgeBase from "./components/KnowledgeBase";
-import Projects from "./components/Projects";
 import KnowledgeImport from "./components/KnowledgeImport";
+import Projects from "./components/Projects";
 import MissionControl from "./components/MissionControl";
-
 import LegalDocumentImportStudio from "./studio/LegalDocumentImportStudio";
 import QuizStudio from "./feature/quiz/components/QuizStudio";
 
+/* ===================================================
+   ARJUN ENTERPRISE OPERATING SYSTEM
+=================================================== */
+
 export default function App() {
+
     const [currentPage, setCurrentPage] = useState("dashboard");
 
-    const renderPage = () => {
-        switch (currentPage) {
-            case "dashboard":
-                return <Dashboard />;
+    const pageRegistry = {
 
-            case "aiagents":
-                return <AIAgents />;
+        dashboard: <Dashboard />,
 
-            case "segments":
-                return <SegmentFactory />;
+        ai: <AIAgents />,
 
-            case "channels":
-                return <ChannelExplorer />;
+        segment: <SegmentFactory />,
 
-            case "production":
-                return <ProductionTracker />;
+        channels: <ChannelExplorer />,
 
-            case "prompts":
-                return <PromptLibrary />;
+        production: <ProductionTracker />,
 
-            case "sop":
-                return <SOPLibrary />;
+        prompts: <PromptLibrary />,
 
-            case "knowledge":
-                return <KnowledgeBase />;
+        sops: <SOPLibrary />,
 
-            case "projects":
-                return <Projects />;
+        knowledge: <KnowledgeBase />,
 
-            case "knowledgeimport":
-                return <KnowledgeImport />;
+        "knowledge-import": <KnowledgeImport />,
 
-            case "mission":
-                return <MissionControl />;
+        projects: <Projects />,
 
-            case "legalstudio":
-                return <LegalDocumentImportStudio />;
+        mission: <MissionControl />,
 
-            case "quizstudio":
-                return <QuizStudio />;
+        legal: <LegalDocumentImportStudio />,
 
-            default:
-                return <Dashboard />;
-        }
+        quiz: <QuizStudio />
+
     };
 
     return (
+
         <AppLayout
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
         >
-            {renderPage()}
+
+            {
+
+                pageRegistry[currentPage]
+
+                ||
+
+                <Dashboard />
+
+            }
+
         </AppLayout>
+
     );
+
 }
