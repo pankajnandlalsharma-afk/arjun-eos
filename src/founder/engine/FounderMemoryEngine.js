@@ -7,7 +7,7 @@
 
 import FounderMemoryController from "../controllers/FounderMemoryController";
 
-export default class FounderMemoryEngine {
+class FounderMemoryEngine {
 
     constructor() {
 
@@ -46,3 +46,7 @@ export default class FounderMemoryEngine {
     }
 
 }
+
+const founderMemoryEngine = new FounderMemoryEngine();
+
+export default founderMemoryEngine;

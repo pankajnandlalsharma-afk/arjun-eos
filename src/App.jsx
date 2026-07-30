@@ -25,6 +25,12 @@ import MissionControl from "./components/MissionControl";
 import LegalDocumentImportStudio from "./studio/LegalDocumentImportStudio";
 import QuizStudio from "./feature/quiz/components/QuizStudio";
 
+/* ===========================
+   FOUNDER MEMORY
+=========================== */
+
+import FounderMemoryDashboard from "./founder/pages/FounderMemoryDashboard";
+
 /* ===================================================
    ARJUN ENTERPRISE OPERATING SYSTEM
 =================================================== */
@@ -59,7 +65,9 @@ export default function App() {
 
         legal: <LegalDocumentImportStudio />,
 
-        quiz: <QuizStudio />
+        quiz: <QuizStudio />,
+
+        founderMemory: <FounderMemoryDashboard />
 
     };
 

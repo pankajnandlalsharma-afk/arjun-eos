@@ -2,18 +2,32 @@ import React from "react";
 
 const menu = [
     { id: "dashboard", title: "🏠 Dashboard" },
-    { id: "aiagents", title: "🤖 AI Agents" },
-    { id: "segments", title: "🏭 Segment Factory" },
-    { id: "channels", title: "📺 Channel Explorer" },
-    { id: "production", title: "🎬 Production Tracker" },
-    { id: "prompts", title: "🧠 Prompt Library" },
-    { id: "sop", title: "📚 SOP Library" },
-    { id: "knowledge", title: "📖 Knowledge Base" },
-    { id: "knowledgeimport", title: "📥 Knowledge Import" },
-    { id: "projects", title: "📁 Projects" },
+
     { id: "mission", title: "🎯 Mission Control" },
-    { id: "legalstudio", title: "⚖️ Legal Studio" },
-    { id: "quizstudio", title: "📝 Quiz Studio" }
+
+    { id: "founderMemory", title: "🧠 Founder Memory" },
+
+    { id: "knowledge", title: "📖 Knowledge Base" },
+
+    { id: "knowledge-import", title: "📥 Knowledge Import" },
+
+    { id: "projects", title: "📁 Projects" },
+
+    { id: "quiz", title: "📝 Quiz Studio" },
+
+    { id: "legal", title: "⚖️ Legal Studio" },
+
+    { id: "ai", title: "🤖 AI Agents" },
+
+    { id: "segment", title: "🏭 Segment Factory" },
+
+    { id: "channels", title: "📺 Channel Explorer" },
+
+    { id: "production", title: "🎬 Production Tracker" },
+
+    { id: "prompts", title: "🧠 Prompt Library" },
+
+    { id: "sops", title: "📚 SOP Library" }
 ];
 
 export default function Sidebar({
@@ -68,4 +82,5 @@ export default function Sidebar({
 
         </aside>
     );
+
 }
