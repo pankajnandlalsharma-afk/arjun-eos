@@ -2,6 +2,7 @@
  * ============================================================
  * ARJUN EOS
  * Founder Memory Engine
+ * Version 2.0
  * ============================================================
  */
 
@@ -30,7 +31,7 @@ class FounderMemoryEngine {
 
         eventBus.publish(
             EventTypes.IDEA_CREATED,
-            idea
+            result
         );
 
         return result;
@@ -40,6 +41,40 @@ class FounderMemoryEngine {
     getIdeas() {
 
         return this.controller.getIdeas();
+
+    }
+
+    updateIdea(updatedIdea) {
+
+        const result = this.controller.updateIdea(updatedIdea);
+
+        if (result) {
+
+            eventBus.publish(
+                EventTypes.IDEA_UPDATED,
+                result
+            );
+
+        }
+
+        return result;
+
+    }
+
+    deleteIdea(id) {
+
+        const deleted = this.controller.deleteIdea(id);
+
+        if (deleted) {
+
+            eventBus.publish(
+                EventTypes.IDEA_DELETED,
+                id
+            );
+
+        }
+
+        return deleted;
 
     }
 
@@ -55,7 +90,7 @@ class FounderMemoryEngine {
 
         eventBus.publish(
             EventTypes.DECISION_CREATED,
-            decision
+            result
         );
 
         return result;

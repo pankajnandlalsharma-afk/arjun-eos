@@ -2,7 +2,7 @@
  * ============================================================
  * ARJUN EOS
  * Founder Memory Repository
- * Version 3.0
+ * Version 4.0
  * ============================================================
  */
 
@@ -38,6 +38,56 @@ export default class FounderMemoryRepository {
     getIdeas() {
 
         return [...this.ideas];
+
+    }
+
+    updateIdea(updatedIdea) {
+
+        const index = this.ideas.findIndex(
+
+            idea => idea.id === updatedIdea.id
+
+        );
+
+        if (index === -1) {
+
+            return null;
+
+        }
+
+        this.ideas[index] = {
+
+            ...this.ideas[index],
+
+            ...updatedIdea
+
+        };
+
+        this.saveIdeas();
+
+        return this.ideas[index];
+
+    }
+
+    deleteIdea(id) {
+
+        const index = this.ideas.findIndex(
+
+            idea => idea.id === id
+
+        );
+
+        if (index === -1) {
+
+            return false;
+
+        }
+
+        this.ideas.splice(index, 1);
+
+        this.saveIdeas();
+
+        return true;
 
     }
 

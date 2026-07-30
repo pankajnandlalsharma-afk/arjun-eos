@@ -2,6 +2,7 @@
  * ============================================================
  * ARJUN EOS
  * Founder Memory Controller
+ * Version 2.0
  * ============================================================
  */
 
@@ -15,6 +16,12 @@ export default class FounderMemoryController {
 
     }
 
+    /**
+     * ============================================================
+     * IDEA OPERATIONS
+     * ============================================================
+     */
+
     createIdea(idea) {
 
         return this.service.createIdea(idea);
@@ -27,6 +34,24 @@ export default class FounderMemoryController {
 
     }
 
+    updateIdea(updatedIdea) {
+
+        return this.service.updateIdea(updatedIdea);
+
+    }
+
+    deleteIdea(id) {
+
+        return this.service.deleteIdea(id);
+
+    }
+
+    /**
+     * ============================================================
+     * DECISION OPERATIONS
+     * ============================================================
+     */
+
     createDecision(decision) {
 
         return this.service.createDecision(decision);
@@ -38,6 +63,12 @@ export default class FounderMemoryController {
         return this.service.getDecisions();
 
     }
+
+    /**
+     * ============================================================
+     * MEMORY OPERATIONS
+     * ============================================================
+     */
 
     clearMemory() {
 

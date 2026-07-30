@@ -12,9 +12,14 @@ export default function CaptureIdeaForm() {
 
     const [description, setDescription] = useState("");
 
+    const [category, setCategory] = useState("General");
+
+    const [priority, setPriority] = useState("Medium");
+
     function saveIdea() {
 
         const trimmedTitle = title.trim();
+
         const trimmedDescription = description.trim();
 
         if (!trimmedTitle) {
@@ -29,11 +34,13 @@ export default function CaptureIdeaForm() {
 
         const idea = new Idea({
 
-            id: Date.now().toString(),
-
             title: trimmedTitle,
 
-            description: trimmedDescription
+            description: trimmedDescription,
+
+            category,
+
+            priority
 
         });
 
@@ -54,7 +61,12 @@ export default function CaptureIdeaForm() {
         );
 
         setTitle("");
+
         setDescription("");
+
+        setCategory("General");
+
+        setPriority("Medium");
 
     }
 
@@ -97,6 +109,61 @@ export default function CaptureIdeaForm() {
                     fontSize: 15
                 }}
             />
+
+            <div
+                style={{
+                    display: "flex",
+                    gap: 15,
+                    marginBottom: 15
+                }}
+            >
+
+                <div style={{ flex: 1 }}>
+
+                    <label>Category</label>
+
+                    <select
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        style={{
+                            width: "100%",
+                            padding: 10,
+                            marginTop: 5
+                        }}
+                    >
+                        <option>General</option>
+                        <option>Business</option>
+                        <option>Technology</option>
+                        <option>Legal</option>
+                        <option>Marketing</option>
+                        <option>Finance</option>
+                        <option>Operations</option>
+                        <option>AI</option>
+                    </select>
+
+                </div>
+
+                <div style={{ flex: 1 }}>
+
+                    <label>Priority</label>
+
+                    <select
+                        value={priority}
+                        onChange={(e) => setPriority(e.target.value)}
+                        style={{
+                            width: "100%",
+                            padding: 10,
+                            marginTop: 5
+                        }}
+                    >
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+                    </select>
+
+                </div>
+
+            </div>
 
             <button
                 onClick={saveIdea}
