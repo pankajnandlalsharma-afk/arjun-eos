@@ -1,17 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import StatisticsCard from "../../enterprise/crud/StatisticsCard";
 import ContentCard from "../../enterprise/layout/ContentCard";
 
 import CaptureIdeaForm from "../components/CaptureIdeaForm";
 import IdeaList from "../components/IdeaList";
+import IdeaSearch from "../components/IdeaSearch";
 
 import founderMemoryEngine from "../engine/FounderMemoryEngine";
-import eventBus from "../../enterprise/events/EventBus";
+
+import {
+    eventBus,
+    EventTypes
+} from "../../enterprise/events";
 
 export default function FounderMemoryDashboard() {
 
     const [ideas, setIdeas] = useState([]);
+
+    const [searchText, setSearchText] = useState("");
 
     useEffect(() => {
 
@@ -23,17 +30,59 @@ export default function FounderMemoryDashboard() {
 
         refreshIdeas();
 
-        eventBus.subscribe("idea.created", refreshIdeas);
-        eventBus.subscribe("memory.cleared", refreshIdeas);
+        eventBus.subscribe(
+            EventTypes.IDEA_CREATED,
+            refreshIdeas
+        );
+
+        eventBus.subscribe(
+            EventTypes.MEMORY_CLEARED,
+            refreshIdeas
+        );
 
         return () => {
 
-            eventBus.unsubscribe("idea.created", refreshIdeas);
-            eventBus.unsubscribe("memory.cleared", refreshIdeas);
+            eventBus.unsubscribe(
+                EventTypes.IDEA_CREATED,
+                refreshIdeas
+            );
+
+            eventBus.unsubscribe(
+                EventTypes.MEMORY_CLEARED,
+                refreshIdeas
+            );
 
         };
 
     }, []);
+
+    const filteredIdeas = useMemo(() => {
+
+        const search = searchText.trim().toLowerCase();
+
+        if (search === "") {
+
+            return ideas;
+
+        }
+
+        return ideas.filter((idea) => {
+
+            const title = (idea.title || "").toLowerCase();
+
+            const description = (idea.description || "").toLowerCase();
+
+            return (
+
+                title.includes(search) ||
+
+                description.includes(search)
+
+            );
+
+        });
+
+    }, [ideas, searchText]);
 
     return (
 
@@ -87,10 +136,10 @@ export default function FounderMemoryDashboard() {
                 />
 
                 <StatisticsCard
-                    title="Decisions"
-                    value={0}
-                    icon="📜"
-                    color="#16a34a"
+                    title="Filtered"
+                    value={filteredIdeas.length}
+                    icon="🔍"
+                    color="#0f766e"
                 />
 
                 <StatisticsCard
@@ -116,6 +165,8 @@ export default function FounderMemoryDashboard() {
                     <li>✅ Controller Layer</li>
                     <li>✅ Engine Layer</li>
                     <li>✅ Enterprise Event Bus</li>
+                    <li>✅ Persistent Storage</li>
+                    <li>✅ Live Search</li>
 
                 </ul>
 
@@ -132,12 +183,28 @@ export default function FounderMemoryDashboard() {
             </ContentCard>
 
             {/* ==========================================
+                SEARCH
+            =========================================== */}
+
+            <ContentCard title="Search Ideas">
+
+                <IdeaSearch
+
+                    value={searchText}
+
+                    onChange={setSearchText}
+
+                />
+
+            </ContentCard>
+
+            {/* ==========================================
                 IDEA LIST
             =========================================== */}
 
             <ContentCard title="Captured Ideas">
 
-                <IdeaList ideas={ideas} />
+                <IdeaList ideas={filteredIdeas} />
 
             </ContentCard>
 

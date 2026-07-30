@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 
+import { enterpriseLogger } from "../../enterprise/logging";
+import { notificationService } from "../../enterprise/notifications";
+
 import founderMemoryEngine from "../engine/FounderMemoryEngine";
 import Idea from "../models/Idea";
 
@@ -11,9 +14,14 @@ export default function CaptureIdeaForm() {
 
     function saveIdea() {
 
-        if (!title.trim()) {
+        const trimmedTitle = title.trim();
+        const trimmedDescription = description.trim();
 
-            alert("Please enter an idea title.");
+        if (!trimmedTitle) {
+
+            notificationService.warning(
+                "Please enter an idea title."
+            );
 
             return;
 
@@ -23,22 +31,29 @@ export default function CaptureIdeaForm() {
 
             id: Date.now().toString(),
 
-            title,
+            title: trimmedTitle,
 
-            description
+            description: trimmedDescription
 
         });
 
         founderMemoryEngine.captureIdea(idea);
 
-        console.log("Saved Ideas");
+        enterpriseLogger.info(
+            "Idea created successfully.",
+            idea
+        );
 
-        console.log(founderMemoryEngine.getIdeas());
+        enterpriseLogger.debug(
+            "Current ideas in Founder Memory.",
+            founderMemoryEngine.getIdeas()
+        );
 
-        alert("Idea captured successfully!");
+        notificationService.success(
+            "Idea captured successfully."
+        );
 
         setTitle("");
-
         setDescription("");
 
     }
@@ -90,9 +105,7 @@ export default function CaptureIdeaForm() {
                     cursor: "pointer"
                 }}
             >
-
                 Save Idea
-
             </button>
 
         </div>
