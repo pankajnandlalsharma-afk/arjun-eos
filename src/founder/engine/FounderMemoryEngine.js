@@ -7,6 +7,9 @@
 
 import FounderMemoryController from "../controllers/FounderMemoryController";
 
+import eventBus from "../../enterprise/events/EventBus";
+import { EventTypes } from "../../enterprise/events/EventTypes";
+
 class FounderMemoryEngine {
 
     constructor() {
@@ -15,15 +18,22 @@ class FounderMemoryEngine {
 
     }
 
+    /**
+     * ============================================================
+     * IDEA OPERATIONS
+     * ============================================================
+     */
+
     captureIdea(idea) {
 
-        return this.controller.createIdea(idea);
+        const result = this.controller.createIdea(idea);
 
-    }
+        eventBus.publish(
+            EventTypes.IDEA_CREATED,
+            idea
+        );
 
-    captureDecision(decision) {
-
-        return this.controller.createDecision(decision);
+        return result;
 
     }
 
@@ -33,15 +43,44 @@ class FounderMemoryEngine {
 
     }
 
+    /**
+     * ============================================================
+     * DECISION OPERATIONS
+     * ============================================================
+     */
+
+    captureDecision(decision) {
+
+        const result = this.controller.createDecision(decision);
+
+        eventBus.publish(
+            EventTypes.DECISION_CREATED,
+            decision
+        );
+
+        return result;
+
+    }
+
     getDecisions() {
 
         return this.controller.getDecisions();
 
     }
 
+    /**
+     * ============================================================
+     * MEMORY OPERATIONS
+     * ============================================================
+     */
+
     clear() {
 
         this.controller.clearMemory();
+
+        eventBus.publish(
+            EventTypes.MEMORY_CLEARED
+        );
 
     }
 

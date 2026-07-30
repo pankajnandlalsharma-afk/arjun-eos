@@ -1,9 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import StatisticsCard from "../../enterprise/crud/StatisticsCard";
+import ContentCard from "../../enterprise/layout/ContentCard";
+
 import CaptureIdeaForm from "../components/CaptureIdeaForm";
+import IdeaList from "../components/IdeaList";
+
+import founderMemoryEngine from "../engine/FounderMemoryEngine";
+import eventBus from "../../enterprise/events/EventBus";
 
 export default function FounderMemoryDashboard() {
+
+    const [ideas, setIdeas] = useState([]);
+
+    useEffect(() => {
+
+        const refreshIdeas = () => {
+
+            setIdeas([...founderMemoryEngine.getIdeas()]);
+
+        };
+
+        refreshIdeas();
+
+        eventBus.subscribe("idea.created", refreshIdeas);
+        eventBus.subscribe("memory.cleared", refreshIdeas);
+
+        return () => {
+
+            eventBus.unsubscribe("idea.created", refreshIdeas);
+            eventBus.unsubscribe("memory.cleared", refreshIdeas);
+
+        };
+
+    }, []);
 
     return (
 
@@ -51,7 +81,7 @@ export default function FounderMemoryDashboard() {
 
                 <StatisticsCard
                     title="Ideas"
-                    value={0}
+                    value={ideas.length}
                     icon="💡"
                     color="#2563eb"
                 />
@@ -65,7 +95,7 @@ export default function FounderMemoryDashboard() {
 
                 <StatisticsCard
                     title="Knowledge Assets"
-                    value={0}
+                    value={ideas.length}
                     icon="📚"
                     color="#9333ea"
                 />
@@ -76,39 +106,40 @@ export default function FounderMemoryDashboard() {
                 ARCHITECTURE STATUS
             =========================================== */}
 
-            <div
-                style={{
-                    border: "1px solid #ddd",
-                    borderRadius: "12px",
-                    padding: "20px",
-                    marginBottom: "30px",
-                    background: "#ffffff"
-                }}
-            >
-
-                <h2>Architecture Status</h2>
+            <ContentCard title="Architecture Status">
 
                 <ul>
 
                     <li>✅ Domain Models</li>
-
                     <li>✅ Repository Layer</li>
-
                     <li>✅ Service Layer</li>
-
                     <li>✅ Controller Layer</li>
-
                     <li>✅ Engine Layer</li>
+                    <li>✅ Enterprise Event Bus</li>
 
                 </ul>
 
-            </div>
+            </ContentCard>
 
             {/* ==========================================
                 CAPTURE IDEA
             =========================================== */}
 
-            <CaptureIdeaForm />
+            <ContentCard title="Capture New Idea">
+
+                <CaptureIdeaForm />
+
+            </ContentCard>
+
+            {/* ==========================================
+                IDEA LIST
+            =========================================== */}
+
+            <ContentCard title="Captured Ideas">
+
+                <IdeaList ideas={ideas} />
+
+            </ContentCard>
 
         </div>
 
