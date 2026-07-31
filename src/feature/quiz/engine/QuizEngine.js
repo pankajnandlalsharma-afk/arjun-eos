@@ -1,9 +1,9 @@
 /**
  * ============================================================
  * ARJUN EOS
- * Quiz Studio
+ * Enterprise Operating System
  * Quiz Engine
- * Version 2.0
+ * Version 2.1
  * ============================================================
  */
 
@@ -22,14 +22,24 @@ class QuizEngine {
 
     createQuiz(quiz) {
 
-        const result = quizController.createQuiz(quiz);
+        try {
 
-        eventBus.publish(
-            EventTypes.QUIZ_CREATED,
-            result
-        );
+            const result = quizController.createQuiz(quiz);
 
-        return result;
+            eventBus.publish(
+                EventTypes.QUIZ_CREATED,
+                result
+            );
+
+            return result;
+
+        } catch (error) {
+
+            console.error(error);
+
+            throw error;
+
+        }
 
     }
 
@@ -39,21 +49,31 @@ class QuizEngine {
      * ========================================================
      */
 
-    importQuizzes(quizzes) {
+    importQuizzes(quizzes = []) {
 
-        const imported =
-            quizController.importQuizzes(quizzes);
+        try {
 
-        if (imported.length > 0) {
+            const imported =
+                quizController.importQuizzes(quizzes);
 
-            eventBus.publish(
-                EventTypes.QUIZZES_IMPORTED,
-                imported
-            );
+            if (imported.length > 0) {
+
+                eventBus.publish(
+                    EventTypes.QUIZZES_IMPORTED,
+                    imported
+                );
+
+            }
+
+            return imported;
+
+        } catch (error) {
+
+            console.error(error);
+
+            throw error;
 
         }
-
-        return imported;
 
     }
 
@@ -83,19 +103,29 @@ class QuizEngine {
 
     updateQuiz(updatedQuiz) {
 
-        const result =
-            quizController.updateQuiz(updatedQuiz);
+        try {
 
-        if (result) {
+            const result =
+                quizController.updateQuiz(updatedQuiz);
 
-            eventBus.publish(
-                EventTypes.QUIZ_UPDATED,
-                result
-            );
+            if (result) {
+
+                eventBus.publish(
+                    EventTypes.QUIZ_UPDATED,
+                    result
+                );
+
+            }
+
+            return result;
+
+        } catch (error) {
+
+            console.error(error);
+
+            throw error;
 
         }
-
-        return result;
 
     }
 
@@ -107,19 +137,29 @@ class QuizEngine {
 
     deleteQuiz(id) {
 
-        const deleted =
-            quizController.deleteQuiz(id);
+        try {
 
-        if (deleted) {
+            const deleted =
+                quizController.deleteQuiz(id);
 
-            eventBus.publish(
-                EventTypes.QUIZ_DELETED,
-                id
-            );
+            if (deleted) {
+
+                eventBus.publish(
+                    EventTypes.QUIZ_DELETED,
+                    id
+                );
+
+            }
+
+            return deleted;
+
+        } catch (error) {
+
+            console.error(error);
+
+            throw error;
 
         }
-
-        return deleted;
 
     }
 
@@ -131,16 +171,28 @@ class QuizEngine {
 
     clearQuizzes() {
 
-        quizController.clearQuizzes();
+        try {
 
-        eventBus.publish(
-            EventTypes.QUIZZES_CLEARED
-        );
+            quizController.clearQuizzes();
+
+            eventBus.publish(
+                EventTypes.QUIZZES_CLEARED
+            );
+
+        } catch (error) {
+
+            console.error(error);
+
+            throw error;
+
+        }
 
     }
 
 }
 
-const quizEngine = new QuizEngine();
+const quizEngine = Object.freeze(
+    new QuizEngine()
+);
 
 export default quizEngine;
