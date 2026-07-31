@@ -1,9 +1,9 @@
 /**
  * ============================================================
  * ARJUN EOS
- * Quiz Studio
+ * Enterprise Operating System
  * Quiz Controller
- * Version 2.0
+ * Version 2.1
  * ============================================================
  */
 
@@ -19,7 +19,17 @@ class QuizController {
 
     createQuiz(quiz) {
 
-        return quizService.createQuiz(quiz);
+        try {
+
+            return quizService.createQuiz(quiz);
+
+        } catch (error) {
+
+            console.error(error);
+
+            throw error;
+
+        }
 
     }
 
@@ -29,9 +39,19 @@ class QuizController {
      * ========================================================
      */
 
-    importQuizzes(quizzes) {
+    importQuizzes(quizzes = []) {
 
-        return quizService.importQuizzes(quizzes);
+        try {
+
+            return quizService.importQuizzes(quizzes);
+
+        } catch (error) {
+
+            console.error(error);
+
+            throw error;
+
+        }
 
     }
 
@@ -61,7 +81,17 @@ class QuizController {
 
     updateQuiz(updatedQuiz) {
 
-        return quizService.updateQuiz(updatedQuiz);
+        try {
+
+            return quizService.updateQuiz(updatedQuiz);
+
+        } catch (error) {
+
+            console.error(error);
+
+            throw error;
+
+        }
 
     }
 
@@ -73,7 +103,17 @@ class QuizController {
 
     deleteQuiz(id) {
 
-        return quizService.deleteQuiz(id);
+        try {
+
+            return quizService.deleteQuiz(id);
+
+        } catch (error) {
+
+            console.error(error);
+
+            throw error;
+
+        }
 
     }
 
@@ -85,12 +125,24 @@ class QuizController {
 
     clearQuizzes() {
 
-        quizService.clearQuizzes();
+        try {
+
+            quizService.clearQuizzes();
+
+        } catch (error) {
+
+            console.error(error);
+
+            throw error;
+
+        }
 
     }
 
 }
 
-const quizController = new QuizController();
+const quizController = Object.freeze(
+    new QuizController()
+);
 
 export default quizController;
