@@ -1,33 +1,45 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 
 const menu = [
-    { id: "dashboard", title: "🏠 Dashboard" },
-
-    { id: "mission", title: "🎯 Mission Control" },
-
-    { id: "founderMemory", title: "🧠 Founder Memory" },
-
-    { id: "knowledge", title: "📖 Knowledge Base" },
-
-    { id: "knowledge-import", title: "📥 Knowledge Import" },
-
-    { id: "projects", title: "📁 Projects" },
-
-    { id: "quiz", title: "📝 Quiz Studio" },
-
-    { id: "legal", title: "⚖️ Legal Studio" },
-
-    { id: "ai", title: "🤖 AI Agents" },
-
-    { id: "segment", title: "🏭 Segment Factory" },
-
-    { id: "channels", title: "📺 Channel Explorer" },
-
-    { id: "production", title: "🎬 Production Tracker" },
-
-    { id: "prompts", title: "🧠 Prompt Library" },
-
-    { id: "sops", title: "📚 SOP Library" }
+    {
+        section: "ENTERPRISE",
+        items: [
+            { id: "dashboard", icon: "🏠", title: "Dashboard" },
+            { id: "mission", icon: "🎯", title: "Mission Control" },
+            { id: "founderMemory", icon: "🧠", title: "Founder Memory" }
+        ]
+    },
+    {
+        section: "KNOWLEDGE",
+        items: [
+            { id: "knowledge", icon: "📖", title: "Knowledge Base" },
+            { id: "knowledge-import", icon: "📥", title: "Knowledge Import" },
+            { id: "projects", icon: "📁", title: "Projects" }
+        ]
+    },
+    {
+        section: "QUIZ ECOSYSTEM",
+        items: [
+            { id: "quiz", icon: "📝", title: "Quiz Studio" },
+            { id: "segment", icon: "🏭", title: "Segment Factory" },
+            { id: "channels", icon: "📺", title: "Channel Explorer" },
+            { id: "production", icon: "🎬", title: "Production Tracker" }
+        ]
+    },
+    {
+        section: "AI & AUTOMATION",
+        items: [
+            { id: "ai", icon: "🤖", title: "AI Agents" },
+            { id: "prompts", icon: "💡", title: "Prompt Library" },
+            { id: "sops", icon: "📚", title: "SOP Library" }
+        ]
+    },
+    {
+        section: "LEGAL",
+        items: [
+            { id: "legal", icon: "⚖️", title: "Legal Studio" }
+        ]
+    }
 ];
 
 export default function Sidebar({
@@ -35,52 +47,139 @@ export default function Sidebar({
     setCurrentPage
 }) {
 
+    const [collapsed, setCollapsed] = useState(false);
+
+    const currentTitle = useMemo(() => {
+        for (const group of menu) {
+            const page = group.items.find(i => i.id === currentPage);
+            if (page) return page.title;
+        }
+        return "Dashboard";
+    }, [currentPage]);
+
     return (
-        <aside className="sidebar">
+
+        <aside className={collapsed ? "sidebar collapsed" : "sidebar"}>
 
             <div className="sidebar-header">
 
-                <div className="sidebar-title">
-                    ARJUN EOS
+                <div>
+
+                    <div className="sidebar-title">
+
+                        {collapsed ? "AE" : "ARJUN EOS"}
+
+                    </div>
+
+                    {!collapsed && (
+
+                        <div className="sidebar-subtitle">
+
+                            Enterprise Operating System
+
+                        </div>
+
+                    )}
+
                 </div>
 
-                <div className="sidebar-subtitle">
-                    Enterprise Operating System
-                </div>
+                <button
+                    className="collapse-btn"
+                    onClick={() => setCollapsed(!collapsed)}
+                >
+                    {collapsed ? "»" : "«"}
+                </button>
 
             </div>
 
-            <div className="sidebar-menu">
+            <div className="sidebar-scroll">
 
-                {
-                    menu.map(item => (
+                {menu.map(section => (
 
-                        <button
-                            key={item.id}
-                            className={
-                                currentPage === item.id
-                                    ? "active"
-                                    : ""
-                            }
-                            onClick={() =>
-                                setCurrentPage(item.id)
-                            }
-                        >
-                            {item.title}
-                        </button>
+                    <div
+                        key={section.section}
+                        className="sidebar-section"
+                    >
 
-                    ))
-                }
+                        {!collapsed && (
+
+                            <div className="sidebar-section-title">
+
+                                {section.section}
+
+                            </div>
+
+                        )}
+
+                        {section.items.map(item => (
+
+                            <button
+                                key={item.id}
+                                className={
+                                    currentPage === item.id
+                                        ? "menu-item active"
+                                        : "menu-item"
+                                }
+                                onClick={() =>
+                                    setCurrentPage(item.id)
+                                }
+                            >
+
+                                <span className="menu-icon">
+
+                                    {item.icon}
+
+                                </span>
+
+                                {!collapsed && (
+
+                                    <span>
+
+                                        {item.title}
+
+                                    </span>
+
+                                )}
+
+                            </button>
+
+                        ))}
+
+                    </div>
+
+                ))}
 
             </div>
 
             <div className="sidebar-footer">
 
-                Version 1.0
+                {!collapsed && (
+
+                    <>
+                        <div>
+
+                            <strong>Current</strong>
+
+                        </div>
+
+                        <div>{currentTitle}</div>
+
+                        <br />
+
+                        <div>
+
+                            Enterprise Shell v1.0
+
+                        </div>
+
+                    </>
+
+                )}
 
             </div>
 
         </aside>
+
     );
 
 }
