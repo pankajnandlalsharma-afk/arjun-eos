@@ -1,9 +1,9 @@
 /**
  * ============================================================
  * ARJUN EOS
- * Quiz Studio
+ * Enterprise Operating System
  * Quiz Repository
- * Version 2.0
+ * Version 2.1
  * ============================================================
  */
 
@@ -19,6 +19,12 @@ class QuizRepository {
 
     }
 
+    /**
+     * ========================================================
+     * Load
+     * ========================================================
+     */
+
     load() {
 
         const quizzes = storageManager.get(STORAGE_KEY);
@@ -29,6 +35,12 @@ class QuizRepository {
 
     }
 
+    /**
+     * ========================================================
+     * Save
+     * ========================================================
+     */
+
     save() {
 
         storageManager.set(
@@ -38,13 +50,49 @@ class QuizRepository {
 
     }
 
+    /**
+     * ========================================================
+     * Create
+     * ========================================================
+     */
+
     create(quiz) {
 
-        this.quizzes.push(quiz);
+        const newQuiz = {
+
+            ...quiz,
+
+            id: quiz.id || crypto.randomUUID()
+
+        };
+
+        const duplicate = this.quizzes.some(
+
+            existingQuiz =>
+
+                existingQuiz.title
+                    ?.trim()
+                    .toLowerCase() ===
+
+                newQuiz.title
+                    ?.trim()
+                    .toLowerCase()
+
+        );
+
+        if (duplicate) {
+
+            throw new Error(
+                "Quiz title already exists."
+            );
+
+        }
+
+        this.quizzes.push(newQuiz);
 
         this.save();
 
-        return quiz;
+        return newQuiz;
 
     }
 
@@ -54,7 +102,7 @@ class QuizRepository {
      * ========================================================
      */
 
-    importQuizzes(quizzes) {
+    importQuizzes(quizzes = []) {
 
         if (!Array.isArray(quizzes) || quizzes.length === 0) {
 
@@ -68,18 +116,18 @@ class QuizRepository {
 
             const newQuiz = {
 
-                ...quiz
+                ...quiz,
+
+                id: quiz.id || crypto.randomUUID()
 
             };
 
-            if (!newQuiz.id) {
-
-                newQuiz.id = crypto.randomUUID();
-
-            }
-
             const exists = this.quizzes.some(
-                existingQuiz => existingQuiz.id === newQuiz.id
+
+                existingQuiz =>
+
+                    existingQuiz.id === newQuiz.id
+
             );
 
             if (exists) {
@@ -100,6 +148,12 @@ class QuizRepository {
 
     }
 
+    /**
+     * ========================================================
+     * Read
+     * ========================================================
+     */
+
     getAll() {
 
         return [...this.quizzes];
@@ -115,6 +169,12 @@ class QuizRepository {
         ) || null;
 
     }
+
+    /**
+     * ========================================================
+     * Update
+     * ========================================================
+     */
 
     update(updatedQuiz) {
 
@@ -144,6 +204,12 @@ class QuizRepository {
 
     }
 
+    /**
+     * ========================================================
+     * Delete
+     * ========================================================
+     */
+
     delete(id) {
 
         const index = this.quizzes.findIndex(
@@ -166,6 +232,12 @@ class QuizRepository {
 
     }
 
+    /**
+     * ========================================================
+     * Utility
+     * ========================================================
+     */
+
     clear() {
 
         this.quizzes = [];
@@ -176,6 +248,8 @@ class QuizRepository {
 
 }
 
-const quizRepository = new QuizRepository();
+const quizRepository = Object.freeze(
+    new QuizRepository()
+);
 
 export default quizRepository;
