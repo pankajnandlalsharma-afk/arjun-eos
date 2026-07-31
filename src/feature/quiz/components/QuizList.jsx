@@ -1,26 +1,27 @@
 /**
  * ============================================================
  * ARJUN EOS
+ * Enterprise Operating System
  * Quiz Studio
- * Quiz List
- * Version 1.0
+ * Quiz Library
+ * Version 1.1
  * ============================================================
  */
 
 import React, { useEffect, useState } from "react";
 
 import quizEngine from "../engine/QuizEngine";
-
 import { notificationService } from "../../enterprise/notifications";
 
 export default function QuizList() {
 
     const [quizzes, setQuizzes] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
 
     const [editingId, setEditingId] = useState(null);
 
     const [title, setTitle] = useState("");
-
     const [description, setDescription] = useState("");
 
     useEffect(() => {
@@ -31,9 +32,27 @@ export default function QuizList() {
 
     function loadQuizzes() {
 
-        setQuizzes(
-            quizEngine.getAllQuizzes()
-        );
+        setLoading(true);
+
+        try {
+
+            const data = quizEngine.getAllQuizzes() || [];
+
+            data.sort((a, b) => {
+
+                if (!a.id || !b.id) return 0;
+
+                return String(b.id).localeCompare(String(a.id));
+
+            });
+
+            setQuizzes(data);
+
+        } finally {
+
+            setLoading(false);
+
+        }
 
     }
 
@@ -41,9 +60,9 @@ export default function QuizList() {
 
         setEditingId(quiz.id);
 
-        setTitle(quiz.title);
+        setTitle(quiz.title || "");
 
-        setDescription(quiz.description);
+        setDescription(quiz.description || "");
 
     }
 
@@ -59,9 +78,9 @@ export default function QuizList() {
 
     function saveQuiz() {
 
-        const trimmedTitle = title.trim();
+        const cleanTitle = title.trim();
 
-        if (!trimmedTitle) {
+        if (!cleanTitle) {
 
             notificationService.warning(
                 "Quiz title is required."
@@ -71,23 +90,41 @@ export default function QuizList() {
 
         }
 
-        quizEngine.updateQuiz({
+        setSaving(true);
 
-            id: editingId,
+        try {
 
-            title: trimmedTitle,
+            quizEngine.updateQuiz({
 
-            description: description.trim()
+                id: editingId,
 
-        });
+                title: cleanTitle,
 
-        notificationService.success(
-            "Quiz updated successfully."
-        );
+                description: description.trim()
 
-        cancelEditing();
+            });
 
-        loadQuizzes();
+            notificationService.success(
+                "Quiz updated successfully."
+            );
+
+            cancelEditing();
+
+            loadQuizzes();
+
+        } catch (error) {
+
+            console.error(error);
+
+            notificationService.error(
+                "Unable to update quiz."
+            );
+
+        } finally {
+
+            setSaving(false);
+
+        }
 
     }
 
@@ -99,19 +136,47 @@ export default function QuizList() {
 
         }
 
-        quizEngine.deleteQuiz(id);
+        try {
 
-        notificationService.success(
-            "Quiz deleted successfully."
-        );
+            quizEngine.deleteQuiz(id);
 
-        loadQuizzes();
+            notificationService.success(
+                "Quiz deleted successfully."
+            );
+
+            loadQuizzes();
+
+        } catch (error) {
+
+            console.error(error);
+
+            notificationService.error(
+                "Unable to delete quiz."
+            );
+
+        }
+
+    }
+
+    if (loading) {
+
+        return <p>Loading quizzes...</p>;
 
     }
 
     if (quizzes.length === 0) {
 
-        return <p>No quizzes created yet.</p>;
+        return (
+
+            <div>
+
+                <h2>Quiz Library</h2>
+
+                <p>No quizzes created yet.</p>
+
+            </div>
+
+        );
 
     }
 
@@ -119,7 +184,7 @@ export default function QuizList() {
 
         <div>
 
-            <h2>Quiz Library</h2>
+            <h2>Quiz Library ({quizzes.length})</h2>
 
             {quizzes.map((quiz) => {
 
@@ -130,10 +195,10 @@ export default function QuizList() {
                     <div
                         key={quiz.id}
                         style={{
-                            border: "1px solid #ccc",
-                            padding: "12px",
-                            marginBottom: "12px",
-                            borderRadius: "8px"
+                            border: "1px solid #d1d5db",
+                            borderRadius: "8px",
+                            padding: "16px",
+                            marginBottom: "12px"
                         }}
                     >
 
@@ -143,28 +208,31 @@ export default function QuizList() {
 
                                 <input
                                     value={title}
-                                    onChange={(e) =>
-                                        setTitle(e.target.value)
-                                    }
+                                    onChange={(e) => setTitle(e.target.value)}
                                 />
+
+                                <br /><br />
 
                                 <textarea
                                     value={description}
-                                    onChange={(e) =>
-                                        setDescription(e.target.value)
-                                    }
+                                    onChange={(e) => setDescription(e.target.value)}
                                 />
 
+                                <br /><br />
+
                                 <button
+                                    disabled={saving}
                                     onClick={saveQuiz}
                                 >
-                                    💾 Save
+                                    {saving ? "Saving..." : "💾 Save"}
                                 </button>
+
+                                {" "}
 
                                 <button
                                     onClick={cancelEditing}
                                 >
-                                    ❌ Cancel
+                                    Cancel
                                 </button>
 
                             </>
@@ -177,26 +245,20 @@ export default function QuizList() {
 
                                 <p>{quiz.description}</p>
 
-                                <p>
-                                    Category: {quiz.category}
-                                </p>
+                                <p><strong>Category:</strong> {quiz.category}</p>
 
-                                <p>
-                                    Difficulty: {quiz.difficulty}
-                                </p>
+                                <p><strong>Difficulty:</strong> {quiz.difficulty}</p>
 
                                 <button
-                                    onClick={() =>
-                                        startEditing(quiz)
-                                    }
+                                    onClick={() => startEditing(quiz)}
                                 >
                                     ✏️ Edit
                                 </button>
 
+                                {" "}
+
                                 <button
-                                    onClick={() =>
-                                        deleteQuiz(quiz.id)
-                                    }
+                                    onClick={() => deleteQuiz(quiz.id)}
                                 >
                                     🗑️ Delete
                                 </button>
