@@ -26,6 +26,12 @@ import LegalDocumentImportStudio from "./studio/LegalDocumentImportStudio";
 import QuizStudio from "./feature/quiz/components/QuizStudio";
 
 /* ===========================
+   SUBJECT REGISTRY
+=========================== */
+
+import SubjectRegistry from "./components/SubjectRegistry";
+
+/* ===========================
    FOUNDER MEMORY
 =========================== */
 
@@ -39,37 +45,51 @@ export default function App() {
 
     const [currentPage, setCurrentPage] = useState("dashboard");
 
+    /*
+    ==================================================
+    ENTERPRISE PAGE REGISTRY
+    ==================================================
+    */
+
     const pageRegistry = {
+
+        /* Dashboard */
 
         dashboard: <Dashboard />,
 
-        ai: <AIAgents />,
-
-        segment: <SegmentFactory />,
-
-        channels: <ChannelExplorer />,
-
-        production: <ProductionTracker />,
-
-        prompts: <PromptLibrary />,
-
-        sops: <SOPLibrary />,
-
-        knowledge: <KnowledgeBase />,
-
-        "knowledge-import": <KnowledgeImport />,
-
-        projects: <Projects />,
+        /* Enterprise */
 
         mission: <MissionControl />,
+        founderMemory: <FounderMemoryDashboard />,
 
-        legal: <LegalDocumentImportStudio />,
+        /* Knowledge */
+
+        knowledge: <KnowledgeBase />,
+        "knowledge-import": <KnowledgeImport />,
+        subjects: <SubjectRegistry />,
+        projects: <Projects />,
+
+        /* Quiz Ecosystem */
 
         quiz: <QuizStudio />,
+        segment: <SegmentFactory />,
+        channels: <ChannelExplorer />,
+        production: <ProductionTracker />,
 
-        founderMemory: <FounderMemoryDashboard />
+        /* AI */
+
+        ai: <AIAgents />,
+        prompts: <PromptLibrary />,
+        sops: <SOPLibrary />,
+
+        /* Legal */
+
+        legal: <LegalDocumentImportStudio />
 
     };
+
+    const CurrentComponent =
+        pageRegistry[currentPage] || <Dashboard />;
 
     return (
 
@@ -78,15 +98,7 @@ export default function App() {
             setCurrentPage={setCurrentPage}
         >
 
-            {
-
-                pageRegistry[currentPage]
-
-                ||
-
-                <Dashboard />
-
-            }
+            {CurrentComponent}
 
         </AppLayout>
 
