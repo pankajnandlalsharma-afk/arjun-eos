@@ -1,9 +1,9 @@
 /**
  * ============================================================
  * ARJUN EOS
- * Quiz Studio
+ * Enterprise Operating System
  * Quiz Service
- * Version 2.0
+ * Version 2.1
  * ============================================================
  */
 
@@ -19,7 +19,17 @@ class QuizService {
 
     createQuiz(quiz) {
 
-        return quizRepository.create(quiz);
+        try {
+
+            return quizRepository.create(quiz);
+
+        } catch (error) {
+
+            console.error(error);
+
+            throw error;
+
+        }
 
     }
 
@@ -29,9 +39,19 @@ class QuizService {
      * ========================================================
      */
 
-    importQuizzes(quizzes) {
+    importQuizzes(quizzes = []) {
 
-        return quizRepository.importQuizzes(quizzes);
+        try {
+
+            return quizRepository.importQuizzes(quizzes);
+
+        } catch (error) {
+
+            console.error(error);
+
+            throw error;
+
+        }
 
     }
 
@@ -61,7 +81,17 @@ class QuizService {
 
     updateQuiz(updatedQuiz) {
 
-        return quizRepository.update(updatedQuiz);
+        try {
+
+            return quizRepository.update(updatedQuiz);
+
+        } catch (error) {
+
+            console.error(error);
+
+            throw error;
+
+        }
 
     }
 
@@ -73,7 +103,17 @@ class QuizService {
 
     deleteQuiz(id) {
 
-        return quizRepository.delete(id);
+        try {
+
+            return quizRepository.delete(id);
+
+        } catch (error) {
+
+            console.error(error);
+
+            throw error;
+
+        }
 
     }
 
@@ -85,12 +125,24 @@ class QuizService {
 
     clearQuizzes() {
 
-        quizRepository.clear();
+        try {
+
+            quizRepository.clear();
+
+        } catch (error) {
+
+            console.error(error);
+
+            throw error;
+
+        }
 
     }
 
 }
 
-const quizService = new QuizService();
+const quizService = Object.freeze(
+    new QuizService()
+);
 
 export default quizService;
