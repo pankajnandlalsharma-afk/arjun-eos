@@ -14,6 +14,8 @@ const menu = [
         items: [
             { id: "knowledge", icon: "📖", title: "Knowledge Base" },
             { id: "knowledge-import", icon: "📥", title: "Knowledge Import" },
+            { id: "subjects", icon: "📚", title: "Subject Registry" },
+            { id: "modules", icon: "🧩", title: "Module Registry" },
             { id: "projects", icon: "📁", title: "Projects" }
         ]
     },
@@ -48,13 +50,35 @@ export default function Sidebar({
 }) {
 
     const [collapsed, setCollapsed] = useState(false);
+    const [search, setSearch] = useState("");
+
+    const filteredMenu = useMemo(() => {
+
+        if (!search.trim()) return menu;
+
+        return menu
+            .map(section => ({
+                ...section,
+                items: section.items.filter(item =>
+                    item.title.toLowerCase().includes(search.toLowerCase())
+                )
+            }))
+            .filter(section => section.items.length > 0);
+
+    }, [search]);
 
     const currentTitle = useMemo(() => {
+
         for (const group of menu) {
+
             const page = group.items.find(i => i.id === currentPage);
+
             if (page) return page.title;
+
         }
+
         return "Dashboard";
+
     }, [currentPage]);
 
     return (
@@ -92,9 +116,25 @@ export default function Sidebar({
 
             </div>
 
+            {!collapsed && (
+
+                <div style={{ padding: "12px" }}>
+
+                    <input
+                        type="text"
+                        placeholder="Search modules..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="enterprise-search"
+                    />
+
+                </div>
+
+            )}
+
             <div className="sidebar-scroll">
 
-                {menu.map(section => (
+                {filteredMenu.map(section => (
 
                     <div
                         key={section.section}
@@ -156,9 +196,10 @@ export default function Sidebar({
                 {!collapsed && (
 
                     <>
+
                         <div>
 
-                            <strong>Current</strong>
+                            <strong>Current Module</strong>
 
                         </div>
 
@@ -167,8 +208,18 @@ export default function Sidebar({
                         <br />
 
                         <div>
+                            Modules : {menu.reduce((total, section) => total + section.items.length, 0)}
+                        </div>
 
-                            Enterprise Shell v1.0
+                        <div>
+                            Sections : {menu.length}
+                        </div>
+
+                        <br />
+
+                        <div>
+
+                            Enterprise Shell v1.1
 
                         </div>
 

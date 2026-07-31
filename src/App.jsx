@@ -26,10 +26,11 @@ import LegalDocumentImportStudio from "./studio/LegalDocumentImportStudio";
 import QuizStudio from "./feature/quiz/components/QuizStudio";
 
 /* ===========================
-   SUBJECT REGISTRY
+   REGISTRIES
 =========================== */
 
 import SubjectRegistry from "./components/SubjectRegistry";
+import ModuleRegistry from "./components/ModuleRegistry";
 
 /* ===========================
    FOUNDER MEMORY
@@ -45,51 +46,57 @@ export default function App() {
 
     const [currentPage, setCurrentPage] = useState("dashboard");
 
-    /*
-    ==================================================
-    ENTERPRISE PAGE REGISTRY
-    ==================================================
-    */
-
     const pageRegistry = {
 
-        /* Dashboard */
+        /* ===========================
+           Dashboard
+        =========================== */
 
         dashboard: <Dashboard />,
 
-        /* Enterprise */
+        /* ===========================
+           Enterprise
+        =========================== */
 
         mission: <MissionControl />,
         founderMemory: <FounderMemoryDashboard />,
 
-        /* Knowledge */
+        /* ===========================
+           Knowledge
+        =========================== */
 
         knowledge: <KnowledgeBase />,
         "knowledge-import": <KnowledgeImport />,
+
         subjects: <SubjectRegistry />,
+        modules: <ModuleRegistry />,
+
         projects: <Projects />,
 
-        /* Quiz Ecosystem */
+        /* ===========================
+           Quiz Ecosystem
+        =========================== */
 
         quiz: <QuizStudio />,
         segment: <SegmentFactory />,
         channels: <ChannelExplorer />,
         production: <ProductionTracker />,
 
-        /* AI */
+        /* ===========================
+           AI
+        =========================== */
 
         ai: <AIAgents />,
         prompts: <PromptLibrary />,
         sops: <SOPLibrary />,
 
-        /* Legal */
+        /* ===========================
+           Legal
+        =========================== */
 
         legal: <LegalDocumentImportStudio />
 
     };
-
-    const CurrentComponent =
-        pageRegistry[currentPage] || <Dashboard />;
 
     return (
 
@@ -98,7 +105,7 @@ export default function App() {
             setCurrentPage={setCurrentPage}
         >
 
-            {CurrentComponent}
+            {pageRegistry[currentPage] || <Dashboard />}
 
         </AppLayout>
 
