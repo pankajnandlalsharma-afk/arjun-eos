@@ -26,7 +26,10 @@ export default function AppLayout({
                     currentPage={currentPage}
                 />
 
-                <main className="workspace">
+                <main
+                    className="workspace"
+                    role="main"
+                >
 
                     {children}
 
