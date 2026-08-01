@@ -1,16 +1,16 @@
 /**
  * ============================================================
  * ARJUN EOS
+ * Enterprise Operating System
  * Quiz Studio
  * Capture Quiz Form
- * Version 1.0
+ * Version 1.1
  * ============================================================
  */
 
 import React, { useState } from "react";
 
 import Quiz from "../models/Quiz";
-
 import quizEngine from "../engine/QuizEngine";
 
 import { notificationService } from "../../enterprise/notifications";
@@ -18,18 +18,26 @@ import { notificationService } from "../../enterprise/notifications";
 export default function CaptureQuizForm({ onQuizCreated }) {
 
     const [title, setTitle] = useState("");
-
     const [description, setDescription] = useState("");
-
     const [category, setCategory] = useState("General");
-
     const [difficulty, setDifficulty] = useState("Medium");
 
-    function createQuiz() {
+    const [isSaving, setIsSaving] = useState(false);
 
-        const trimmedTitle = title.trim();
+    function resetForm() {
 
-        if (!trimmedTitle) {
+        setTitle("");
+        setDescription("");
+        setCategory("General");
+        setDifficulty("Medium");
+
+    }
+
+    async function createQuiz() {
+
+        const cleanTitle = title.trim();
+
+        if (!cleanTitle) {
 
             notificationService.warning(
                 "Please enter a quiz title."
@@ -39,35 +47,47 @@ export default function CaptureQuizForm({ onQuizCreated }) {
 
         }
 
-        const quiz = new Quiz({
+        setIsSaving(true);
 
-            title: trimmedTitle,
+        try {
 
-            description: description.trim(),
+            const quiz = new Quiz({
 
-            category,
+                title: cleanTitle,
 
-            difficulty
+                description: description.trim(),
 
-        });
+                category,
 
-        quizEngine.createQuiz(quiz);
+                difficulty
 
-        notificationService.success(
-            "Quiz created successfully."
-        );
+            });
 
-        setTitle("");
+            quizEngine.createQuiz(quiz);
 
-        setDescription("");
+            notificationService.success(
+                "Quiz created successfully."
+            );
 
-        setCategory("General");
+            resetForm();
 
-        setDifficulty("Medium");
+            if (onQuizCreated) {
 
-        if (onQuizCreated) {
+                onQuizCreated();
 
-            onQuizCreated();
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            notificationService.error(
+                error.message || "Unable to create quiz."
+            );
+
+        } finally {
+
+            setIsSaving(false);
 
         }
 
@@ -115,10 +135,11 @@ export default function CaptureQuizForm({ onQuizCreated }) {
                 <option>Hard</option>
             </select>
 
-            <button onClick={createQuiz}>
-
-                Create Quiz
-
+            <button
+                onClick={createQuiz}
+                disabled={isSaving}
+            >
+                {isSaving ? "Creating..." : "Create Quiz"}
             </button>
 
         </div>

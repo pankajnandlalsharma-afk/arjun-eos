@@ -1,7 +1,9 @@
 /**
  * ====================================================
  * ARJUN EOS
+ * Enterprise Operating System
  * Quiz Form
+ * Version 1.1
  * ====================================================
  */
 
@@ -16,22 +18,24 @@ function QuizForm({ quiz = null, onQuizCreated }) {
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("");
     const [difficulty, setDifficulty] = useState("Medium");
+    const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
 
         if (!quiz) {
+            resetForm();
             return;
         }
 
-        setId(quiz.id);
-        setTitle(quiz.title || "");
-        setDescription(quiz.description || "");
-        setCategory(quiz.category || "");
-        setDifficulty(quiz.difficulty || "Medium");
+        setId(quiz.id ?? null);
+        setTitle(quiz.title ?? "");
+        setDescription(quiz.description ?? "");
+        setCategory(quiz.category ?? "");
+        setDifficulty(quiz.difficulty ?? "Medium");
 
     }, [quiz]);
 
-    const resetForm = () => {
+    function resetForm() {
 
         setId(null);
         setTitle("");
@@ -39,42 +43,65 @@ function QuizForm({ quiz = null, onQuizCreated }) {
         setCategory("");
         setDifficulty("Medium");
 
-    };
+    }
 
-    const handleSubmit = (event) => {
+    async function handleSubmit(event) {
 
         event.preventDefault();
 
-        const quizData = new Quiz({
-            id,
-            title,
-            description,
-            category,
-            difficulty,
-            questions: quiz?.questions || []
-        });
+        const cleanTitle = title.trim();
 
-        if (id) {
+        if (!cleanTitle) {
+            alert("Quiz title is required.");
+            return;
+        }
 
-            QuizController.updateQuiz(quizData);
+        setIsSaving(true);
 
-            alert("Quiz updated successfully.");
+        try {
 
-        } else {
+            const quizData = new Quiz({
+                id,
+                title: cleanTitle,
+                description: description.trim(),
+                category: category.trim(),
+                difficulty,
+                questions: quiz?.questions ?? []
+            });
 
-            QuizController.createQuiz(quizData);
+            if (id) {
 
-            alert("Quiz created successfully.");
+                await QuizController.updateQuiz(quizData);
+
+                alert("Quiz updated successfully.");
+
+            } else {
+
+                await QuizController.createQuiz(quizData);
+
+                alert("Quiz created successfully.");
+
+            }
+
+            resetForm();
+
+            if (onQuizCreated) {
+                onQuizCreated();
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Unable to save quiz.");
+
+        } finally {
+
+            setIsSaving(false);
 
         }
 
-        resetForm();
-
-        if (onQuizCreated) {
-            onQuizCreated();
-        }
-
-    };
+    }
 
     return (
 
@@ -136,8 +163,15 @@ function QuizForm({ quiz = null, onQuizCreated }) {
                     </select>
                 </div>
 
-                <button type="submit">
-                    {id ? "Update Quiz" : "Save Quiz"}
+                <button
+                    type="submit"
+                    disabled={isSaving}
+                >
+                    {isSaving
+                        ? "Saving..."
+                        : id
+                            ? "Update Quiz"
+                            : "Save Quiz"}
                 </button>
 
             </form>
