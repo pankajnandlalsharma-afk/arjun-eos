@@ -1,11 +1,14 @@
 import { useState } from "react";
 import GatePass from "./GatePass";
+import EnterpriseReceivingService from "./EnterpriseReceivingService";
 
 export default function EnterpriseGate() {
 
     const [selectedResource, setSelectedResource] = useState(null);
 
     const [gatePass, setGatePass] = useState(null);
+
+    const receivingService = new EnterpriseReceivingService();
 
     function selectResource(event) {
 
@@ -29,6 +32,10 @@ export default function EnterpriseGate() {
 
         }
 
+        //------------------------------------------------------
+        // STEP 1 : Enterprise Gate issues Gate Pass
+        //------------------------------------------------------
+
         const pass = new GatePass({
 
             gatePassId: "GP-" + Date.now(),
@@ -43,7 +50,29 @@ export default function EnterpriseGate() {
 
         });
 
-        setGatePass(pass);
+        //------------------------------------------------------
+        // STEP 2 : Receiving Department accepts shipment
+        //------------------------------------------------------
+
+        const response = receivingService.receive(
+
+            pass,
+
+            selectedResource
+
+        );
+
+        //------------------------------------------------------
+        // STEP 3 : Update UI
+        //------------------------------------------------------
+
+        setGatePass({
+
+            ...pass,
+
+            enterpriseResource: response.enterpriseResource
+
+        });
 
     }
 
@@ -120,6 +149,14 @@ export default function EnterpriseGate() {
 
                             <tr>
 
+                                <td><strong>Enterprise Resource</strong></td>
+
+                                <td>{gatePass.enterpriseResource.resourceId}</td>
+
+                            </tr>
+
+                            <tr>
+
                                 <td><strong>Resource</strong></td>
 
                                 <td>{gatePass.resourceName}</td>
@@ -175,18 +212,35 @@ export default function EnterpriseGate() {
                     <div
                         style={{
                             padding: "15px",
-                            background: "#f4f4f4",
-                            borderRadius: "6px"
+                            background: "#e8f5e9",
+                            borderRadius: "6px",
+                            border: "1px solid #81c784"
                         }}
                     >
 
-                        <strong>Next Step</strong>
+                        <strong>Receiving Department</strong>
 
                         <p>
 
-                            Gate Pass issued successfully.
+                            ✅ Gate Pass issued successfully.
 
-                            Awaiting acceptance by the Enterprise Receiving Department.
+                        </p>
+
+                        <p>
+
+                            ✅ Enterprise Receiving Department accepted the shipment.
+
+                        </p>
+
+                        <p>
+
+                            ✅ Enterprise Resource created successfully.
+
+                        </p>
+
+                        <p>
+
+                            ➜ Ready for Inspection Department.
 
                         </p>
 
