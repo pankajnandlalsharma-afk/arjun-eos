@@ -1,10 +1,11 @@
 import { useState } from "react";
+import GatePass from "./GatePass";
 
 export default function EnterpriseGate() {
 
-    const [resource, setResource] = useState(null);
+    const [selectedResource, setSelectedResource] = useState(null);
 
-    const [receipt, setReceipt] = useState(null);
+    const [gatePass, setGatePass] = useState(null);
 
     function selectResource(event) {
 
@@ -12,41 +13,37 @@ export default function EnterpriseGate() {
 
         if (!file) return;
 
-        setResource(file);
+        setSelectedResource(file);
 
-        setReceipt(null);
+        setGatePass(null);
 
     }
 
     function receiveResource() {
 
-        if (!resource) {
+        if (!selectedResource) {
 
-            alert("Please select a resource first.");
+            alert("Please select a resource.");
 
             return;
 
         }
 
-        const enterpriseResourceId = crypto.randomUUID();
+        const pass = new GatePass({
 
-        setReceipt({
+            gatePassId: "GP-" + Date.now(),
 
-            enterpriseResourceId,
+            resourceName: selectedResource.name,
 
-            fileName: resource.name,
+            resourceType: selectedResource.type || "UNKNOWN",
 
-            fileSize: resource.size,
+            source: "External World",
 
-            resourceType: resource.type,
-
-            receivedAt: new Date().toLocaleString(),
-
-            status: "RECEIVED",
-
-            nextDepartment: "Enterprise Receiving Department"
+            destinationDepartment: "Enterprise Receiving Department"
 
         });
+
+        setGatePass(pass);
 
     }
 
@@ -75,38 +72,39 @@ export default function EnterpriseGate() {
 
             <hr />
 
-            <h3>Incoming Resource</h3>
+            <h3>Select Incoming Resource</h3>
 
             <input
                 type="file"
                 onChange={selectResource}
             />
 
-            <br /><br />
+            <br />
+            <br />
 
             <button
+                disabled={!selectedResource}
                 onClick={receiveResource}
-                disabled={!resource}
             >
                 RECEIVE RESOURCE
             </button>
 
-            <hr />
-
             {
 
-                receipt &&
+                gatePass &&
 
-                <div>
+                <>
 
-                    <h2>Enterprise Receipt</h2>
+                    <hr />
+
+                    <h2>Gate Pass Issued</h2>
 
                     <table
                         border="1"
                         cellPadding="10"
                         style={{
-                            borderCollapse: "collapse",
-                            width: "100%"
+                            width: "100%",
+                            borderCollapse: "collapse"
                         }}
                     >
 
@@ -114,9 +112,9 @@ export default function EnterpriseGate() {
 
                             <tr>
 
-                                <td><strong>Enterprise Resource ID</strong></td>
+                                <td><strong>Gate Pass</strong></td>
 
-                                <td>{receipt.enterpriseResourceId}</td>
+                                <td>{gatePass.gatePassId}</td>
 
                             </tr>
 
@@ -124,15 +122,7 @@ export default function EnterpriseGate() {
 
                                 <td><strong>Resource</strong></td>
 
-                                <td>{receipt.fileName}</td>
-
-                            </tr>
-
-                            <tr>
-
-                                <td><strong>Size</strong></td>
-
-                                <td>{receipt.fileSize} bytes</td>
+                                <td>{gatePass.resourceName}</td>
 
                             </tr>
 
@@ -140,7 +130,23 @@ export default function EnterpriseGate() {
 
                                 <td><strong>Type</strong></td>
 
-                                <td>{receipt.resourceType}</td>
+                                <td>{gatePass.resourceType}</td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td><strong>Source</strong></td>
+
+                                <td>{gatePass.source}</td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td><strong>Destination</strong></td>
+
+                                <td>{gatePass.destinationDepartment}</td>
 
                             </tr>
 
@@ -148,23 +154,15 @@ export default function EnterpriseGate() {
 
                                 <td><strong>Status</strong></td>
 
-                                <td>{receipt.status}</td>
+                                <td>{gatePass.status}</td>
 
                             </tr>
 
                             <tr>
 
-                                <td><strong>Received At</strong></td>
+                                <td><strong>Entry Time</strong></td>
 
-                                <td>{receipt.receivedAt}</td>
-
-                            </tr>
-
-                            <tr>
-
-                                <td><strong>Transferred To</strong></td>
-
-                                <td>{receipt.nextDepartment}</td>
+                                <td>{gatePass.entryTimestamp}</td>
 
                             </tr>
 
@@ -172,7 +170,29 @@ export default function EnterpriseGate() {
 
                     </table>
 
-                </div>
+                    <br />
+
+                    <div
+                        style={{
+                            padding: "15px",
+                            background: "#f4f4f4",
+                            borderRadius: "6px"
+                        }}
+                    >
+
+                        <strong>Next Step</strong>
+
+                        <p>
+
+                            Gate Pass issued successfully.
+
+                            Awaiting acceptance by the Enterprise Receiving Department.
+
+                        </p>
+
+                    </div>
+
+                </>
 
             }
 
