@@ -3,6 +3,9 @@ import PdfParser from "../parser/PdfParser";
 import KnowledgeExtractionEngine from "../feature/KnowledgeExtractionEngine";
 import KnowledgeViewer from "./KnowledgeViewer";
 
+import EnterpriseResource from "../enterprise/contracts/EnterpriseResource";
+import storageManager from "../core/storage/StorageManager";
+
 export default function KnowledgeImport() {
 
     const [loading, setLoading] = useState(false);
@@ -26,6 +29,28 @@ export default function KnowledgeImport() {
 
         try {
 
+            //--------------------------------------------------
+            // STEP 1 : Register Enterprise Resource
+            //--------------------------------------------------
+
+            const resource = new EnterpriseResource({
+
+                resourceId: crypto.randomUUID(),
+
+                resourceName: file.name,
+
+                originalFileName: file.name,
+
+                resourceType: "DOCUMENT",
+
+                sourceType: "PDF"
+
+            });
+
+            //--------------------------------------------------
+            // STEP 2 : Read PDF
+            //--------------------------------------------------
+
             const output = await PdfParser.extractText(file);
 
             if (!output.success) {
@@ -38,29 +63,63 @@ export default function KnowledgeImport() {
 
             }
 
+            //--------------------------------------------------
+            // STEP 3 : Update Resource Metadata
+            //--------------------------------------------------
+
+            resource.metadata = {
+
+                pages: output.pages,
+
+                fileSize: file.size,
+
+                mimeType: file.type
+
+            };
+
+            //--------------------------------------------------
+            // STEP 4 : Save Enterprise Resource
+            //--------------------------------------------------
+
+            storageManager.set(
+
+                resource.resourceId,
+
+                resource
+
+            );
+
+            //--------------------------------------------------
+            // STEP 5 : Extract Knowledge
+            //--------------------------------------------------
+
             const extractor = new KnowledgeExtractionEngine();
 
             const knowledge = extractor.extract({
 
-                id: Date.now(),
-
-                fileName: file.name,
-
-                sourceType: "PDF",
+                resource,
 
                 text: output.text
 
             });
 
+            //--------------------------------------------------
+            // STEP 6 : Display Result
+            //--------------------------------------------------
+
             setResult({
 
                 ...output,
+
+                resource,
 
                 knowledge
 
             });
 
         } catch (error) {
+
+            console.error(error);
 
             setResult({
 
@@ -116,13 +175,9 @@ export default function KnowledgeImport() {
             />
 
             <button onClick={() => comingSoon("DOCX")}>DOCX</button>{" "}
-
             <button onClick={() => comingSoon("TXT")}>TXT</button>{" "}
-
             <button onClick={() => comingSoon("Excel")}>Excel</button>{" "}
-
             <button onClick={() => comingSoon("PowerPoint")}>PowerPoint</button>{" "}
-
             <button onClick={() => comingSoon("CSV")}>CSV</button>
 
             <hr />
@@ -130,9 +185,7 @@ export default function KnowledgeImport() {
             <h3>🖼️ Image Inputs</h3>
 
             <button onClick={() => comingSoon("Images")}>Images</button>{" "}
-
             <button onClick={() => comingSoon("Scanned Documents")}>Scanned Documents</button>{" "}
-
             <button onClick={() => comingSoon("Handwritten Notes")}>Handwritten Notes</button>
 
             <hr />
@@ -140,7 +193,6 @@ export default function KnowledgeImport() {
             <h3>🎤 Audio Inputs</h3>
 
             <button onClick={() => comingSoon("Audio Upload")}>Audio</button>{" "}
-
             <button onClick={() => comingSoon("Voice Notes")}>Voice Notes</button>
 
             <hr />
@@ -148,7 +200,6 @@ export default function KnowledgeImport() {
             <h3>🎥 Video Inputs</h3>
 
             <button onClick={() => comingSoon("Video Upload")}>Video</button>{" "}
-
             <button onClick={() => comingSoon("YouTube Import")}>YouTube</button>
 
             <hr />
@@ -156,9 +207,7 @@ export default function KnowledgeImport() {
             <h3>🌐 Website Inputs</h3>
 
             <button onClick={() => comingSoon("Website URL")}>Website URL</button>{" "}
-
             <button onClick={() => comingSoon("RSS Feed")}>RSS Feed</button>{" "}
-
             <button onClick={() => comingSoon("API")}>API</button>
 
             <hr />
@@ -166,9 +215,7 @@ export default function KnowledgeImport() {
             <h3>☁️ Cloud Inputs</h3>
 
             <button onClick={() => comingSoon("Google Drive")}>Google Drive</button>{" "}
-
             <button onClick={() => comingSoon("OneDrive")}>OneDrive</button>{" "}
-
             <button onClick={() => comingSoon("Dropbox")}>Dropbox</button>
 
             <hr />
@@ -176,9 +223,7 @@ export default function KnowledgeImport() {
             <h3>🗄️ Database Inputs</h3>
 
             <button onClick={() => comingSoon("MySQL")}>MySQL</button>{" "}
-
             <button onClick={() => comingSoon("PostgreSQL")}>PostgreSQL</button>{" "}
-
             <button onClick={() => comingSoon("MongoDB")}>MongoDB</button>
 
             <hr />
@@ -186,9 +231,7 @@ export default function KnowledgeImport() {
             <h3>⌨️ Manual Inputs</h3>
 
             <button onClick={() => comingSoon("Paste Text")}>Paste Text</button>{" "}
-
             <button onClick={() => comingSoon("Rich Text Editor")}>Rich Text</button>{" "}
-
             <button onClick={() => comingSoon("Voice Dictation")}>Voice</button>
 
             <hr />
@@ -196,7 +239,6 @@ export default function KnowledgeImport() {
             <h3>🔴 Live Inputs</h3>
 
             <button onClick={() => comingSoon("Court Updates")}>Court Updates</button>{" "}
-
             <button onClick={() => comingSoon("Government Notifications")}>Government Updates</button>
 
             <hr />
@@ -204,9 +246,7 @@ export default function KnowledgeImport() {
             <h3>📦 Bulk Import</h3>
 
             <button onClick={() => comingSoon("Multiple PDFs")}>Multiple Files</button>{" "}
-
             <button onClick={() => comingSoon("Folder Import")}>Folder Import</button>{" "}
-
             <button onClick={() => comingSoon("ZIP Import")}>ZIP Import</button>
 
             <hr />
