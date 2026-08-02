@@ -6,13 +6,15 @@ export default class KnowledgeExtractionEngine {
 
         const lines = this.getLines(text);
 
+        const resource = inspectionResult.resource;
+
         return {
 
-            id: inspectionResult.id,
+            id: resource?.resourceId ?? inspectionResult.id,
 
-            fileName: inspectionResult.fileName,
+            fileName: resource?.originalFileName ?? inspectionResult.fileName,
 
-            sourceType: inspectionResult.sourceType,
+            sourceType: resource?.sourceType ?? inspectionResult.sourceType,
 
             concepts: this.extractConcepts(lines),
 
