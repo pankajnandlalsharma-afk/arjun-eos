@@ -26,12 +26,6 @@ import LegalDocumentImportStudio from "./studio/LegalDocumentImportStudio";
 import QuizStudio from "./feature/quiz/components/QuizStudio";
 
 /* ===========================
-   ENTERPRISE RECEIVING
-=========================== */
-
-import EnterpriseGate from "./departments/EnterpriseReceivingDepartment/EnterpriseGate";
-
-/* ===========================
    REGISTRIES
 =========================== */
 
@@ -73,8 +67,8 @@ export default function App() {
 
         knowledge: <KnowledgeBase />,
 
-        // Enterprise Entry Point
-        "knowledge-import": <EnterpriseGate />,
+        // Enterprise Gate (Real Entry Point)
+        "knowledge-import": <KnowledgeImport />,
 
         subjects: <SubjectRegistry />,
         modules: <ModuleRegistry />,
