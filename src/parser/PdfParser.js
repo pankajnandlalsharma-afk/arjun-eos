@@ -21,15 +21,32 @@ class PdfParser {
 
             const pagesData = [];
 
+            let totalWords = 0;
+
+            //--------------------------------------------------
+            // Read Every Page
+            //--------------------------------------------------
+
             for (let pageNo = 1; pageNo <= pdf.numPages; pageNo++) {
 
                 const page = await pdf.getPage(pageNo);
+
+                const viewport = page.getViewport({
+                    scale: 1
+                });
 
                 const content = await page.getTextContent();
 
                 const pageText = content.items
                     .map(item => item.str)
                     .join(" ");
+
+                const wordCount = pageText
+                    .split(/\s+/)
+                    .filter(Boolean)
+                    .length;
+
+                totalWords += wordCount;
 
                 fullText += pageText + "\n\n";
 
@@ -39,28 +56,108 @@ class PdfParser {
 
                     text: pageText,
 
-                    wordCount: pageText
-                        .split(/\s+/)
-                        .filter(Boolean)
-                        .length
+                    wordCount,
+
+                    characterCount: pageText.length,
+
+                    width: viewport.width,
+
+                    height: viewport.height,
+
+                    orientation:
+
+                        viewport.width > viewport.height
+
+                            ? "Landscape"
+
+                            : "Portrait"
 
                 });
 
             }
 
+            //--------------------------------------------------
+            // Document Statistics
+            //--------------------------------------------------
+
+            const statistics = {
+
+                totalPages: pdf.numPages,
+
+                totalWords,
+
+                totalCharacters: fullText.length,
+
+                averageWordsPerPage:
+
+                    pdf.numPages > 0
+
+                        ? Math.round(totalWords / pdf.numPages)
+
+                        : 0
+
+            };
+
+            //--------------------------------------------------
+            // Enterprise Metadata
+            //--------------------------------------------------
+
+            const metadata = {
+
+                fileName: file.name,
+
+                fileSize: file.size,
+
+                mimeType: file.type,
+
+                importedAt: new Date().toISOString()
+
+            };
+
+            //--------------------------------------------------
+            // Return Enterprise Object
+            //--------------------------------------------------
+
             return {
 
                 success: true,
 
+                metadata,
+
+                statistics,
+
                 pages: pdf.numPages,
+
+                pagesData,
 
                 text: fullText,
 
-                pagesData
+                capabilities: {
+
+                    text: true,
+
+                    metadata: true,
+
+                    pages: true,
+
+                    statistics: true,
+
+                    images: false,
+
+                    tables: false,
+
+                    bookmarks: false,
+
+                    attachments: false,
+
+                    hyperlinks: false
+
+                }
 
             };
 
         }
+
         catch (error) {
 
             console.error(error);
