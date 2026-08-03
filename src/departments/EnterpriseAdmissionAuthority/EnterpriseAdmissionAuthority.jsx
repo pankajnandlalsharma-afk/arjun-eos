@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import AdmissionTicket from "./AdmissionTicket";
 import AdmissionQueue from "./AdmissionQueue";
+import AdmissionDashboard from "./AdmissionDashboard";
 
 export default function EnterpriseAdmissionAuthority() {
 
@@ -33,6 +34,10 @@ export default function EnterpriseAdmissionAuthority() {
 
         }
 
+        //--------------------------------------------------
+        // Create Admission Ticket
+        //--------------------------------------------------
+
         const ticket = new AdmissionTicket({
 
             ticketId: "AT-" + Date.now(),
@@ -47,19 +52,27 @@ export default function EnterpriseAdmissionAuthority() {
 
         });
 
+        //--------------------------------------------------
+        // Enterprise Admission
+        //--------------------------------------------------
+
         queue.enqueue(ticket);
 
-        setStatistics(queue.getStatistics());
+        queue.approve(ticket.ticketId);
 
-        alert(
+        //--------------------------------------------------
+        // Refresh Dashboard
+        //--------------------------------------------------
 
-            "Knowledge Asset admitted to Enterprise Queue.\n\n" +
+        setStatistics(
 
-            "Admission Ticket : " +
-
-            ticket.ticketId
+            queue.getStatistics()
 
         );
+
+        //--------------------------------------------------
+        // Reset
+        //--------------------------------------------------
 
         setSelectedFile(null);
 
@@ -111,9 +124,40 @@ export default function EnterpriseAdmissionAuthority() {
 
             />
 
-            <br /><br />
+            <br />
+
+            <br />
+
+            {
+
+                selectedFile &&
+
+                <div
+                    style={{
+                        padding: "12px",
+                        background: "#f5f5f5",
+                        borderRadius: "6px",
+                        marginBottom: "20px"
+                    }}
+                >
+
+                    <strong>Selected Knowledge Asset</strong>
+
+                    <br />
+
+                    {selectedFile.name}
+
+                    <br />
+
+                    {(selectedFile.size / 1024).toFixed(2)} KB
+
+                </div>
+
+            }
 
             <button
+
+                disabled={!selectedFile}
 
                 onClick={admitKnowledgeAsset}
 
@@ -123,60 +167,11 @@ export default function EnterpriseAdmissionAuthority() {
 
             </button>
 
-            <hr />
+            <AdmissionDashboard
 
-            <h3>
+                statistics={statistics}
 
-                Enterprise Admission Queue
-
-            </h3>
-
-            <table
-                border="1"
-                cellPadding="10"
-                style={{
-                    width: "100%",
-                    borderCollapse: "collapse"
-                }}
-            >
-
-                <tbody>
-
-                    <tr>
-
-                        <td><strong>Pending</strong></td>
-
-                        <td>{statistics.pending}</td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td><strong>Approved</strong></td>
-
-                        <td>{statistics.approved}</td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td><strong>Rejected</strong></td>
-
-                        <td>{statistics.rejected}</td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td><strong>Total Requests</strong></td>
-
-                        <td>{statistics.total}</td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
+            />
 
         </div>
 
