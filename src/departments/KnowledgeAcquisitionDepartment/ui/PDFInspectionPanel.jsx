@@ -60,6 +60,29 @@ export default function PDFInspectionPanel({
 
     }
 
+    const metadata =
+        inspection.metadata ||
+        inspection.parserOutput?.metadata ||
+        {};
+
+    const statistics =
+        inspection.statistics ||
+        inspection.parserOutput?.statistics ||
+        {};
+
+    const capabilities =
+        inspection.capabilities ||
+        inspection.parserOutput?.capabilities ||
+        {};
+
+    const pages =
+        inspection.pages ||
+        inspection.parserOutput?.pages ||
+        0;
+
+    const file =
+        inspection.file || {};
+
     return (
 
         <div
@@ -106,7 +129,11 @@ export default function PDFInspectionPanel({
 
                         <td><strong>File Name</strong></td>
 
-                        <td>{inspection.metadata.fileName}</td>
+                        <td>
+
+                            {metadata.fileName || file.name}
+
+                        </td>
 
                     </tr>
 
@@ -116,7 +143,25 @@ export default function PDFInspectionPanel({
 
                         <td>
 
-                            {(inspection.metadata.fileSize / 1024).toFixed(2)} KB
+                            {
+
+                                (
+
+                                    (
+
+                                        metadata.fileSize ||
+
+                                        file.size ||
+
+                                        0
+
+                                    ) / 1024
+
+                                ).toFixed(2)
+
+                            }
+
+                            {" "}KB
 
                         </td>
 
@@ -126,7 +171,17 @@ export default function PDFInspectionPanel({
 
                         <td><strong>Pages</strong></td>
 
-                        <td>{inspection.statistics.totalPages}</td>
+                        <td>
+
+                            {
+
+                                statistics.totalPages ||
+
+                                pages
+
+                            }
+
+                        </td>
 
                     </tr>
 
@@ -134,7 +189,15 @@ export default function PDFInspectionPanel({
 
                         <td><strong>Total Words</strong></td>
 
-                        <td>{inspection.statistics.totalWords}</td>
+                        <td>
+
+                            {
+
+                                statistics.totalWords || 0
+
+                            }
+
+                        </td>
 
                     </tr>
 
@@ -142,15 +205,39 @@ export default function PDFInspectionPanel({
 
                         <td><strong>Total Characters</strong></td>
 
-                        <td>{inspection.statistics.totalCharacters}</td>
+                        <td>
+
+                            {
+
+                                statistics.totalCharacters || 0
+
+                            }
+
+                        </td>
 
                     </tr>
 
                     <tr>
 
-                        <td><strong>Average Words/Page</strong></td>
+                        <td>
 
-                        <td>{inspection.statistics.averageWordsPerPage}</td>
+                            <strong>
+
+                                Average Words/Page
+
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            {
+
+                                statistics.averageWordsPerPage || 0
+
+                            }
+
+                        </td>
 
                     </tr>
 
@@ -162,151 +249,91 @@ export default function PDFInspectionPanel({
 
             <h3>
 
+                Detected Capabilities
+
+            </h3>
+
+            <ul>
+
+                {
+
+                    Object.entries(capabilities)
+
+                        .map(
+
+                            ([key, value]) =>
+
+                                <li key={key}>
+
+                                    {
+
+                                        value
+
+                                            ? "✅"
+
+                                            : "❌"
+
+                                    }
+
+                                    {" "}
+
+                                    {key}
+
+                                </li>
+
+                        )
+
+                }
+
+            </ul>
+
+            <hr />
+
+            <h3>
+
                 Import Options
 
             </h3>
 
-            <label>
+            {
 
-                <input
+                Object.keys(options)
 
-                    type="checkbox"
+                    .map(key => (
 
-                    checked={options.text}
+                        <label
 
-                    onChange={() => toggle("text")}
+                            key={key}
 
-                />
+                            style={{
 
-                Text
+                                display: "block",
 
-            </label>
+                                marginBottom: "8px"
 
-            <br />
+                            }}
 
-            <label>
+                        >
 
-                <input
+                            <input
 
-                    type="checkbox"
+                                type="checkbox"
 
-                    checked={options.metadata}
+                                checked={options[key]}
 
-                    onChange={() => toggle("metadata")}
+                                onChange={() => toggle(key)}
 
-                />
+                            />
 
-                Metadata
+                            {" "}
 
-            </label>
+                            {key}
 
-            <br />
+                        </label>
 
-            <label>
+                    ))
 
-                <input
-
-                    type="checkbox"
-
-                    checked={options.statistics}
-
-                    onChange={() => toggle("statistics")}
-
-                />
-
-                Statistics
-
-            </label>
-
-            <br />
-
-            <label>
-
-                <input
-
-                    type="checkbox"
-
-                    checked={options.pages}
-
-                    onChange={() => toggle("pages")}
-
-                />
-
-                Page Information
-
-            </label>
-
-            <br />
-
-            <label>
-
-                <input
-
-                    type="checkbox"
-
-                    checked={options.images}
-
-                    onChange={() => toggle("images")}
-
-                />
-
-                Images
-
-            </label>
-
-            <br />
-
-            <label>
-
-                <input
-
-                    type="checkbox"
-
-                    checked={options.tables}
-
-                    onChange={() => toggle("tables")}
-
-                />
-
-                Tables
-
-            </label>
-
-            <br />
-
-            <label>
-
-                <input
-
-                    type="checkbox"
-
-                    checked={options.hyperlinks}
-
-                    onChange={() => toggle("hyperlinks")}
-
-                />
-
-                Hyperlinks
-
-            </label>
-
-            <br />
-
-            <label>
-
-                <input
-
-                    type="checkbox"
-
-                    checked={options.attachments}
-
-                    onChange={() => toggle("attachments")}
-
-                />
-
-                Attachments
-
-            </label>
+            }
 
             <hr />
 
