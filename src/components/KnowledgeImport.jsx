@@ -5,10 +5,11 @@ import KnowledgeExtractionEngine from "../feature/KnowledgeExtractionEngine";
 import KnowledgeViewer from "./KnowledgeViewer";
 
 import EnterpriseResource from "../enterprise/contracts/EnterpriseResource";
-import storageManager from "../core/storage/StorageManager";
+
 
 import PDFInspectionPanel from "../departments/KnowledgeAcquisitionDepartment/ui/PDFInspectionPanel";
-
+import ImportWorkflow from "../workflows/ImportWorkflow/ImportWorkflow";
+import KnowledgeAcquisitionController from "../controllers/KnowledgeAcquisitionController";
 export default function KnowledgeImport() {
 
     const [loading, setLoading] = useState(false);
@@ -16,7 +17,7 @@ export default function KnowledgeImport() {
     const [result, setResult] = useState(null);
 
     const [inspection, setInspection] = useState(null);
-
+const knowledgeController = new KnowledgeAcquisitionController();
     //--------------------------------------------------
     // PDF Upload
     //--------------------------------------------------
@@ -24,7 +25,9 @@ export default function KnowledgeImport() {
     async function handlePDF(event) {
 
         const file = event.target.files[0];
+const workflow = new ImportWorkflow();
 
+let workflowResult = null;
         if (!file) return;
 
         if (file.type !== "application/pdf") {
@@ -36,6 +39,16 @@ export default function KnowledgeImport() {
         }
 
         setLoading(true);
+workflowResult = await
+ workflow.execute({
+
+    knowledgeAsset: file,
+
+    source: "PDF",
+
+    requestedBy: "Knowledge Acquisition Department"
+
+});
 
         try {
 
@@ -93,13 +106,7 @@ export default function KnowledgeImport() {
             // Store Enterprise Resource
             //--------------------------------------------------
 
-            storageManager.set(
-
-                resource.resourceId,
-
-                resource
-
-            );
+           knowledgeController.registerResource(resource);
 
             //--------------------------------------------------
             // Enterprise Inspection

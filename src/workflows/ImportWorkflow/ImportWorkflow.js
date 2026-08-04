@@ -1,54 +1,238 @@
 /**
  * ============================================================
  * ARJUN EOS
- * Import Workflow Result
- * WKF-IMP-002
+ * Enterprise Import Workflow
+ * WKF-IMP-001
  * ============================================================
  *
- * Standard response returned by the Enterprise
- * Import Workflow.
+ * Orchestrates the complete Enterprise Import Process.
  * ============================================================
  */
 
-export default class ImportWorkflowResult {
+import AdmissionTicket from "../../departments/EnterpriseAdmissionAuthority/AdmissionTicket";
+import AdmissionQueue from "../../departments/EnterpriseAdmissionAuthority/AdmissionQueue";
+import EnterpriseReceivingService from "../../departments/EnterpriseReceivingDepartment/EnterpriseReceivingService";
 
-    constructor({
+import PdfParser from "../../parser/PdfParser";
+import KnowledgeExtractionEngine from "../../feature/KnowledgeExtractionEngine";
 
-        success = false,
+import ImportWorkflowResult from "./ImportWorkflowResult";
 
-        admissionTicket = null,
+export default class ImportWorkflow {
 
-        enterpriseResource = null,
+    constructor() {
 
-        statistics = null,
+        this.admissionQueue = new AdmissionQueue();
 
-        knowledge = null,
+        this.receivingService = new EnterpriseReceivingService();
 
-        pdf = null,
+    }
 
-        message = "",
+    async execute({
 
-        error = null
+        knowledgeAsset,
 
-    } = {}) {
+        source = "External World",
 
-        this.success = success;
+        requestedBy = "Knowledge Acquisition Department"
 
-        this.admissionTicket = admissionTicket;
+    }) {
 
-        this.enterpriseResource = enterpriseResource;
+        if (!knowledgeAsset) {
 
-        this.statistics = statistics;
+            throw new Error("Knowledge Asset is required.");
 
-        this.knowledge = knowledge;
+        }
 
-        this.pdf = pdf;
+        try {
 
-        this.message = message;
+            //--------------------------------------------------
+            // STEP 1 : Enterprise Admission
+            //--------------------------------------------------
 
-        this.error = error;
+            const admissionTicket = new AdmissionTicket({
 
-        this.completedAt = new Date().toISOString();
+                ticketId: "AT-" + Date.now(),
+
+                knowledgeAssetName: knowledgeAsset.name,
+
+                knowledgeAssetType: knowledgeAsset.type,
+
+                source,
+
+                requestedBy
+
+            });
+
+            this.admissionQueue.enqueue(
+
+                admissionTicket
+
+            );
+
+            this.admissionQueue.approve(
+
+                admissionTicket.ticketId
+
+            );
+
+            //--------------------------------------------------
+            // STEP 2 : Enterprise Receiving
+            //--------------------------------------------------
+
+            const receivingResult =
+
+                this.receivingService.receive(
+
+                    {
+
+                        gatePassId:
+
+                            admissionTicket.ticketId,
+
+                        source
+
+                    },
+
+                    knowledgeAsset
+
+                );
+
+            //--------------------------------------------------
+            // STEP 3 : PDF Parsing
+            //--------------------------------------------------
+
+            const pdfResult =
+
+                await PdfParser.extractText(
+
+                    knowledgeAsset
+
+                );
+
+            if (!pdfResult.success) {
+
+                return new ImportWorkflowResult({
+
+                    success: false,
+
+                    admissionTicket,
+
+                    enterpriseResource:
+
+                        receivingResult.enterpriseResource,
+
+                    statistics:
+
+                        this.admissionQueue.getStatistics(),
+
+                    message:
+
+                        "PDF Parsing Failed",
+
+                    error:
+
+                        pdfResult.error
+
+                });
+
+            }
+
+            //--------------------------------------------------
+            // STEP 4 : Knowledge Extraction
+            //--------------------------------------------------
+
+            const extractor =
+
+                new KnowledgeExtractionEngine();
+
+            const knowledge =
+
+                extractor.extract({
+
+                    resource:
+
+                        receivingResult.enterpriseResource,
+
+                    text:
+
+                        pdfResult.text
+
+                });
+
+            //--------------------------------------------------
+            // STEP 5 : Store Metadata
+            //--------------------------------------------------
+
+            receivingResult.enterpriseResource.metadata = {
+
+                pages:
+
+                    pdfResult.pages,
+
+                fileSize:
+
+                    knowledgeAsset.size,
+
+                mimeType:
+
+                    knowledgeAsset.type,
+
+                importedAt:
+
+                    new Date().toISOString()
+
+            };
+
+            //--------------------------------------------------
+            // STEP 6 : Enterprise Result
+            //--------------------------------------------------
+
+            return new ImportWorkflowResult({
+
+                success: true,
+
+                admissionTicket,
+
+                enterpriseResource:
+
+                    receivingResult.enterpriseResource,
+
+                statistics:
+
+                    this.admissionQueue.getStatistics(),
+
+                knowledge,
+
+                pdf:
+
+                    pdfResult,
+
+                message:
+
+                    "Knowledge Asset Imported Successfully"
+
+            });
+
+        }
+
+        catch (error) {
+
+            return new ImportWorkflowResult({
+
+                success: false,
+
+                message:
+
+                    "Enterprise Import Failed",
+
+                error:
+
+                    error.message
+
+            });
+
+        }
 
     }
 
