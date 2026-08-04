@@ -1,54 +1,23 @@
 import { useMemo, useState } from "react";
 
+import KnowledgeAcquisitionRepository from "../../../repositories/KnowledgeAcquisitionRepository";
+
 export default function EnterpriseResourceExplorer() {
 
     const [search, setSearch] = useState("");
 
-    const resources = [
+    const repository = new KnowledgeAcquisitionRepository();
 
-        {
-            id: "ER-001",
-            name: "Constitution.pdf",
-            type: "PDF",
-            source: "PDF Upload",
-            status: "VALIDATED",
-            importedOn: "2026-08-04"
-        },
-
-        {
-            id: "ER-002",
-            name: "BNSS Notes.docx",
-            type: "DOCX",
-            source: "Manual Upload",
-            status: "IMPORTED",
-            importedOn: "2026-08-04"
-        },
-
-        {
-            id: "ER-003",
-            name: "CrimeScene.jpg",
-            type: "IMAGE",
-            source: "Image Upload",
-            status: "PENDING",
-            importedOn: "2026-08-04"
-        }
-
-    ];
+    const resources = repository.getAll();
 
     const filteredResources = useMemo(() => {
 
-        const keyword = search.trim().toLowerCase();
-
-        if (!keyword)
+        if (!search.trim())
             return resources;
 
-        return resources.filter(resource =>
-            resource.name.toLowerCase().includes(keyword) ||
-            resource.type.toLowerCase().includes(keyword) ||
-            resource.status.toLowerCase().includes(keyword)
-        );
+        return repository.search(search);
 
-    }, [search]);
+    }, [search, resources]);
 
     function action(message) {
 
@@ -61,24 +30,36 @@ export default function EnterpriseResourceExplorer() {
         <div>
 
             <h2>
+
                 Enterprise Resource Explorer
+
             </h2>
 
             <p>
+
                 View and manage every enterprise resource imported into ARJUN EOS.
+
             </p>
 
             <input
+
                 type="text"
+
                 placeholder="Search resources..."
+
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+
+                onChange={(e) =>
+                    setSearch(e.target.value)
+                }
+
                 style={{
                     width: "100%",
                     padding: "10px",
                     marginTop: "15px",
                     marginBottom: "20px"
                 }}
+
             />
 
             <table
@@ -92,17 +73,41 @@ export default function EnterpriseResourceExplorer() {
 
                     <tr>
 
-                        <th align="left">Name</th>
+                        <th align="left">
 
-                        <th align="left">Type</th>
+                            Resource
 
-                        <th align="left">Status</th>
+                        </th>
 
-                        <th align="left">Source</th>
+                        <th align="left">
 
-                        <th align="left">Imported</th>
+                            Type
 
-                        <th align="center">Actions</th>
+                        </th>
+
+                        <th align="left">
+
+                            Source
+
+                        </th>
+
+                        <th align="left">
+
+                            Lifecycle
+
+                        </th>
+
+                        <th align="left">
+
+                            Created
+
+                        </th>
+
+                        <th align="center">
+
+                            Actions
+
+                        </th>
 
                     </tr>
 
@@ -112,60 +117,125 @@ export default function EnterpriseResourceExplorer() {
 
                     {
 
-                        filteredResources.map(resource => (
+                        filteredResources.length === 0
 
-                            <tr
-                                key={resource.id}
-                                style={{
-                                    borderTop: "1px solid #ddd"
-                                }}
-                            >
+                            ?
 
-                                <td>{resource.name}</td>
+                            <tr>
 
-                                <td>{resource.type}</td>
+                                <td
+                                    colSpan="6"
+                                    align="center"
+                                    style={{
+                                        padding: "25px"
+                                    }}
+                                >
 
-                                <td>{resource.status}</td>
-
-                                <td>{resource.source}</td>
-
-                                <td>{resource.importedOn}</td>
-
-                                <td align="center">
-
-                                    <button
-                                        onClick={() =>
-                                            action("Open " + resource.name)
-                                        }
-                                    >
-                                        Open
-                                    </button>
-
-                                    {" "}
-
-                                    <button
-                                        onClick={() =>
-                                            action("Inspect " + resource.name)
-                                        }
-                                    >
-                                        Inspect
-                                    </button>
-
-                                    {" "}
-
-                                    <button
-                                        onClick={() =>
-                                            action("Delete " + resource.name)
-                                        }
-                                    >
-                                        Delete
-                                    </button>
+                                    No enterprise resources found.
 
                                 </td>
 
                             </tr>
 
-                        ))
+                            :
+
+                            filteredResources.map(resource => (
+
+                                <tr
+                                    key={resource.resourceId}
+                                    style={{
+                                        borderTop: "1px solid #ddd"
+                                    }}
+                                >
+
+                                    <td>
+
+                                        {resource.resourceName}
+
+                                    </td>
+
+                                    <td>
+
+                                        {resource.resourceType}
+
+                                    </td>
+
+                                    <td>
+
+                                        {resource.sourceType}
+
+                                    </td>
+
+                                    <td>
+
+                                        {resource.lifecycle}
+
+                                    </td>
+
+                                    <td>
+
+                                        {
+
+                                            resource.createdAt
+                                                ?.substring(0, 10)
+
+                                        }
+
+                                    </td>
+
+                                    <td align="center">
+
+                                        <button
+                                            onClick={() =>
+                                                action(
+                                                    "Open " +
+                                                    resource.resourceName
+                                                )
+                                            }
+                                        >
+
+                                            Open
+
+                                        </button>
+
+                                        {" "}
+
+                                        <button
+                                            onClick={() =>
+                                                action(
+                                                    "Inspect " +
+                                                    resource.resourceName
+                                                )
+                                            }
+                                        >
+
+                                            Inspect
+
+                                        </button>
+
+                                        {" "}
+
+                                        <button
+                                            onClick={() => {
+
+                                                repository.delete(
+                                                    resource.resourceId
+                                                );
+
+                                                window.location.reload();
+
+                                            }}
+                                        >
+
+                                            Delete
+
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+
+                            ))
 
                     }
 
