@@ -20,11 +20,19 @@ export default class KnowledgeAcquisitionController {
 
     }
 
+    //--------------------------------------------------
+    // Registration
+    //--------------------------------------------------
+
     registerResource(resource) {
 
         return this.service.registerResource(resource);
 
     }
+
+    //--------------------------------------------------
+    // Inspection
+    //--------------------------------------------------
 
     inspectResource(resourceId) {
 
@@ -38,6 +46,38 @@ export default class KnowledgeAcquisitionController {
 
     }
 
+    //--------------------------------------------------
+    // Validation
+    //--------------------------------------------------
+
+    approveResource(resourceId) {
+
+        return this.service.approveResource(resourceId);
+
+    }
+
+    rejectResource(resourceId) {
+
+        return this.service.rejectResource(resourceId);
+
+    }
+
+    markPending(resourceId) {
+
+        return this.service.markPending(resourceId);
+
+    }
+
+    getValidationQueue() {
+
+        return this.service.getValidationQueue();
+
+    }
+
+    //--------------------------------------------------
+    // Queries
+    //--------------------------------------------------
+
     getResource(resourceId) {
 
         return this.service.getResource(resourceId);
@@ -49,6 +89,10 @@ export default class KnowledgeAcquisitionController {
         return this.service.getAllResources();
 
     }
+
+    //--------------------------------------------------
+    // Maintenance
+    //--------------------------------------------------
 
     deleteResource(resourceId) {
 

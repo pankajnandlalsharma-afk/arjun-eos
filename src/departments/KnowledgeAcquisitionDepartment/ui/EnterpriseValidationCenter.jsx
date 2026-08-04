@@ -1,30 +1,32 @@
+import KnowledgeAcquisitionController from "../../../controllers/KnowledgeAcquisitionController";
+
 export default function EnterpriseValidationCenter() {
 
-    const validationQueue = [
+    const controller = new KnowledgeAcquisitionController();
 
-        {
-            id: "ER-001",
-            resource: "Constitution.pdf",
-            status: "Pending"
-        },
+    const validationQueue = controller.getValidationQueue();
 
-        {
-            id: "ER-002",
-            resource: "BNSS Notes.docx",
-            status: "Validated"
-        },
+    function approve(resourceId) {
 
-        {
-            id: "ER-003",
-            resource: "CrimeScene.jpg",
-            status: "Warning"
-        }
+        controller.approveResource(resourceId);
 
-    ];
+        window.location.reload();
 
-    function action(name, resource) {
+    }
 
-        alert(name + " : " + resource + " (Sprint 3)");
+    function reject(resourceId) {
+
+        controller.rejectResource(resourceId);
+
+        window.location.reload();
+
+    }
+
+    function reprocess(resourceId) {
+
+        controller.markPending(resourceId);
+
+        window.location.reload();
 
     }
 
@@ -51,13 +53,21 @@ export default function EnterpriseValidationCenter() {
 
                     <tr>
 
-                        <th align="left">ID</th>
+                        <th align="left">
+                            Resource ID
+                        </th>
 
-                        <th align="left">Resource</th>
+                        <th align="left">
+                            Resource
+                        </th>
 
-                        <th align="left">Status</th>
+                        <th align="left">
+                            Lifecycle
+                        </th>
 
-                        <th align="center">Actions</th>
+                        <th align="center">
+                            Actions
+                        </th>
 
                     </tr>
 
@@ -67,36 +77,70 @@ export default function EnterpriseValidationCenter() {
 
                     {
 
-                        validationQueue.map(item => (
+                        validationQueue.length === 0
+
+                        ?
+
+                        <tr>
+
+                            <td
+                                colSpan="4"
+                                align="center"
+                                style={{
+                                    padding: "25px"
+                                }}
+                            >
+
+                                No resources waiting for validation.
+
+                            </td>
+
+                        </tr>
+
+                        :
+
+                        validationQueue.map(resource => (
 
                             <tr
-                                key={item.id}
+                                key={resource.resourceId}
                                 style={{
                                     borderTop: "1px solid #ddd"
                                 }}
                             >
 
-                                <td>{item.id}</td>
+                                <td>
 
-                                <td>{item.resource}</td>
+                                    {resource.resourceId}
 
-                                <td>{item.status}</td>
+                                </td>
+
+                                <td>
+
+                                    {resource.resourceName}
+
+                                </td>
+
+                                <td>
+
+                                    {resource.lifecycle}
+
+                                </td>
 
                                 <td align="center">
 
                                     <button
                                         onClick={() =>
-                                            action("Validate", item.resource)
+                                            approve(resource.resourceId)
                                         }
                                     >
-                                        Validate
+                                        Approve
                                     </button>
 
                                     {" "}
 
                                     <button
                                         onClick={() =>
-                                            action("Reject", item.resource)
+                                            reject(resource.resourceId)
                                         }
                                     >
                                         Reject
@@ -106,10 +150,10 @@ export default function EnterpriseValidationCenter() {
 
                                     <button
                                         onClick={() =>
-                                            action("Reprocess", item.resource)
+                                            reprocess(resource.resourceId)
                                         }
                                     >
-                                        Reprocess
+                                        Pending
                                     </button>
 
                                 </td>
