@@ -19,11 +19,17 @@ import ProductionTracker from "./components/ProductionTracker";
 import PromptLibrary from "./components/PromptLibrary";
 import SOPLibrary from "./components/SOPLibrary";
 import KnowledgeBase from "./components/KnowledgeBase";
-import KnowledgeImport from "./components/KnowledgeImport";
 import Projects from "./components/Projects";
 import MissionControl from "./components/MissionControl";
-import LegalDocumentImportStudio from "./studio/LegalDocumentImportStudio";
-import QuizStudio from "./feature/quiz/components/QuizStudio";
+
+import KnowledgeAcquisitionDepartment
+    from "./departments/KnowledgeAcquisitionDepartment/KnowledgeAcquisitionDepartment";
+
+import LegalDocumentImportStudio
+    from "./studio/LegalDocumentImportStudio";
+
+import QuizStudio
+    from "./feature/quiz/components/QuizStudio";
 
 /* ===========================
    REGISTRIES
@@ -36,7 +42,8 @@ import ModuleRegistry from "./components/ModuleRegistry";
    FOUNDER MEMORY
 =========================== */
 
-import FounderMemoryDashboard from "./founder/pages/FounderMemoryDashboard";
+import FounderMemoryDashboard
+    from "./founder/pages/FounderMemoryDashboard";
 
 /* ===================================================
    ARJUN ENTERPRISE OPERATING SYSTEM
@@ -59,6 +66,7 @@ export default function App() {
         =========================== */
 
         mission: <MissionControl />,
+
         founderMemory: <FounderMemoryDashboard />,
 
         /* ===========================
@@ -67,10 +75,11 @@ export default function App() {
 
         knowledge: <KnowledgeBase />,
 
-        // Enterprise Gate (Real Entry Point)
-        "knowledge-import": <KnowledgeImport />,
+        "knowledge-import":
+            <KnowledgeAcquisitionDepartment />,
 
         subjects: <SubjectRegistry />,
+
         modules: <ModuleRegistry />,
 
         projects: <Projects />,
@@ -80,8 +89,11 @@ export default function App() {
         =========================== */
 
         quiz: <QuizStudio />,
+
         segment: <SegmentFactory />,
+
         channels: <ChannelExplorer />,
+
         production: <ProductionTracker />,
 
         /* ===========================
@@ -89,7 +101,9 @@ export default function App() {
         =========================== */
 
         ai: <AIAgents />,
+
         prompts: <PromptLibrary />,
+
         sops: <SOPLibrary />,
 
         /* ===========================
