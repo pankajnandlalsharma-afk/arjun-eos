@@ -1,0 +1,98 @@
+/**
+ * ============================================================
+ * ARJUN EOS
+ * Knowledge Acquisition Service
+ *
+ * Contract : KE.KAD
+ * Layer    : Service
+ * Purpose  : Orchestrates Knowledge Acquisition operations.
+ * ============================================================
+ */
+
+import KnowledgeAcquisitionEngine
+    from "../engine/KnowledgeAcquisitionEngine";
+
+import KnowledgeAcquisitionRepository
+    from "../repositories/KnowledgeAcquisitionRepository";
+
+export default class KnowledgeAcquisitionService {
+
+    constructor() {
+
+        this.engine = new KnowledgeAcquisitionEngine();
+
+        this.repository = new KnowledgeAcquisitionRepository();
+
+    }
+
+    registerResource(resource) {
+
+        resource = this.engine.registerResource(resource);
+
+        this.repository.save(resource);
+
+        return resource;
+
+    }
+
+    inspectResource(resourceId) {
+
+        let resource = this.repository.findById(resourceId);
+
+        if (!resource) {
+
+            throw new Error("Enterprise Resource not found.");
+
+        }
+
+        resource = this.engine.inspectResource(resource);
+
+        this.repository.save(resource);
+
+        return resource;
+
+    }
+
+    prepareForValidation(resourceId) {
+
+        let resource = this.repository.findById(resourceId);
+
+        if (!resource) {
+
+            throw new Error("Enterprise Resource not found.");
+
+        }
+
+        resource = this.engine.prepareForValidation(resource);
+
+        this.repository.save(resource);
+
+        return resource;
+
+    }
+
+    getResource(resourceId) {
+
+        return this.repository.findById(resourceId);
+
+    }
+
+    getAllResources() {
+
+        return this.repository.getAll();
+
+    }
+
+    deleteResource(resourceId) {
+
+        this.repository.delete(resourceId);
+
+    }
+
+    clearResources() {
+
+        this.repository.clear();
+
+    }
+
+}
