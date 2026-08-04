@@ -1,38 +1,51 @@
+import KnowledgeAcquisitionRepository from "../../../repositories/KnowledgeAcquisitionRepository";
+
 export default function KnowledgeDashboard() {
+
+    const repository = new KnowledgeAcquisitionRepository();
+
+    const statistics = repository.getStatistics();
 
     const cards = [
 
         {
             title: "Total Resources",
-            value: 0
+            value: statistics.totalResources
         },
 
         {
-            title: "Imported Today",
-            value: 0
+            title: "Documents",
+            value: statistics.documents
         },
 
         {
-            title: "Pending Validation",
-            value: 0
+            title: "PDF Files",
+            value: statistics.pdfs
         },
 
         {
-            title: "Knowledge Objects",
-            value: 0
+            title: "Images",
+            value: statistics.images
         },
 
         {
-            title: "Failed Imports",
-            value: 0
+            title: "Videos",
+            value: statistics.videos
         },
 
         {
-            title: "Success Rate",
-            value: "0%"
+            title: "Audio",
+            value: statistics.audio
+        },
+
+        {
+            title: "Websites",
+            value: statistics.websites
         }
 
     ];
+
+    const resources = repository.getAll();
 
     return (
 
@@ -43,7 +56,7 @@ export default function KnowledgeDashboard() {
             </h2>
 
             <p>
-                Enterprise overview of all acquired knowledge resources.
+                Live enterprise overview of all acquired knowledge resources.
             </p>
 
             <div
@@ -70,9 +83,17 @@ export default function KnowledgeDashboard() {
                             }}
                         >
 
-                            <h3>{card.title}</h3>
+                            <h3>
 
-                            <h1>{card.value}</h1>
+                                {card.title}
+
+                            </h3>
+
+                            <h1>
+
+                                {card.value}
+
+                            </h1>
 
                         </div>
 
@@ -92,12 +113,57 @@ export default function KnowledgeDashboard() {
             >
 
                 <h3>
+
                     Recent Imports
+
                 </h3>
 
-                <p>
-                    No resources imported yet.
-                </p>
+                {
+
+                    resources.length === 0
+
+                        ?
+
+                        <p>
+
+                            No resources imported yet.
+
+                        </p>
+
+                        :
+
+                        <ul>
+
+                            {
+
+                                resources
+                                    .slice(-5)
+                                    .reverse()
+                                    .map(resource => (
+
+                                        <li
+                                            key={resource.resourceId}
+                                        >
+
+                                            <strong>
+
+                                                {resource.resourceName}
+
+                                            </strong>
+
+                                            {" - "}
+
+                                            {resource.sourceType}
+
+                                        </li>
+
+                                    ))
+
+                            }
+
+                        </ul>
+
+                }
 
             </div>
 
@@ -111,7 +177,9 @@ export default function KnowledgeDashboard() {
             >
 
                 <h3>
+
                     Quick Actions
+
                 </h3>
 
                 <ul>
