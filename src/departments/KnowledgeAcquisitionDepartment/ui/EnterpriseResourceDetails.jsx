@@ -1,40 +1,40 @@
+import KnowledgeAcquisitionRepository from "../../../repositories/KnowledgeAcquisitionRepository";
+
 export default function EnterpriseResourceDetails() {
 
-    const resource = {
+    const repository = new KnowledgeAcquisitionRepository();
 
-        resourceId: "ER-000001",
+    const resources = repository.getAll();
 
-        resourceName: "Constitution of India.pdf",
-
-        originalFileName: "constitution.pdf",
-
-        resourceType: "DOCUMENT",
-
-        sourceType: "PDF",
-
-        lifecycle: "REGISTERED",
-
-        version: 1,
-
-        createdAt: "2026-08-04",
-
-        updatedAt: "2026-08-04",
-
-        metadata: {
-
-            pages: 395,
-
-            fileSize: "5.2 MB",
-
-            language: "English"
-
-        }
-
-    };
+    const resource = resources.length > 0
+        ? resources[0]
+        : null;
 
     function action(name) {
 
         alert(name + " (Sprint 3)");
+
+    }
+
+    if (!resource) {
+
+        return (
+
+            <div>
+
+                <h2>
+                    Enterprise Resource Details
+                </h2>
+
+                <hr />
+
+                <p>
+                    No enterprise resource available.
+                </p>
+
+            </div>
+
+        );
 
     }
 
@@ -122,17 +122,17 @@ export default function EnterpriseResourceDetails() {
 
                     <tr>
                         <td><strong>Pages</strong></td>
-                        <td>{resource.metadata.pages}</td>
+                        <td>{resource.metadata?.pages ?? "-"}</td>
                     </tr>
 
                     <tr>
                         <td><strong>File Size</strong></td>
-                        <td>{resource.metadata.fileSize}</td>
+                        <td>{resource.metadata?.fileSize ?? "-"}</td>
                     </tr>
 
                     <tr>
                         <td><strong>Language</strong></td>
-                        <td>{resource.metadata.language}</td>
+                        <td>{resource.metadata?.language ?? "-"}</td>
                     </tr>
 
                 </tbody>
@@ -146,7 +146,17 @@ export default function EnterpriseResourceDetails() {
             </h3>
 
             <p>
-                No audit records available.
+
+                {
+
+                    resource.auditTrail?.length
+
+                        ? `${resource.auditTrail.length} audit records`
+
+                        : "No audit records available."
+
+                }
+
             </p>
 
             <hr />
@@ -156,7 +166,9 @@ export default function EnterpriseResourceDetails() {
             </h3>
 
             <p>
-                No extracted knowledge objects.
+
+                Coming in Sprint 4
+
             </p>
 
             <hr />
