@@ -1,25 +1,26 @@
 import { useState } from "react";
 
 import KnowledgeDashboard from "./ui/KnowledgeDashboard";
+import EnterpriseKnowledgeDashboard from "./ui/EnterpriseKnowledgeDashboard";
 import EnterpriseResourceExplorer from "./ui/EnterpriseResourceExplorer";
 import EnterpriseValidationCenter from "./ui/EnterpriseValidationCenter";
 import EnterpriseClassificationCenter from "./ui/EnterpriseClassificationCenter";
 import EnterpriseSearchCenter from "./ui/EnterpriseSearchCenter";
 import EnterpriseAnalyticsCenter from "./ui/EnterpriseAnalyticsCenter";
 
-import AIKnowledgeExplorer
-    from "../../components/AIKnowledgeExplorer";
-
-import KnowledgeImport
-    from "../../components/KnowledgeImport";
+import AIKnowledgeExplorer from "../../components/AIKnowledgeExplorer";
+import KnowledgeImport from "../../components/KnowledgeImport";
 
 export default function KnowledgeAcquisitionDepartment() {
 
-    const [activeTab, setActiveTab] = useState("DASHBOARD");
+    const [activeTab, setActiveTab] = useState("KNOWLEDGE");
 
     function renderContent() {
 
         switch (activeTab) {
+
+            case "KNOWLEDGE":
+                return <EnterpriseKnowledgeDashboard />;
 
             case "DASHBOARD":
                 return <KnowledgeDashboard />;
@@ -46,7 +47,7 @@ export default function KnowledgeAcquisitionDepartment() {
                 return <EnterpriseAnalyticsCenter />;
 
             default:
-                return <KnowledgeDashboard />;
+                return <EnterpriseKnowledgeDashboard />;
 
         }
 
@@ -69,14 +70,14 @@ export default function KnowledgeAcquisitionDepartment() {
 
             <p>
 
-                Enterprise gateway for acquiring,
+                Enterprise platform for importing,
                 validating,
                 classifying,
-                searching,
                 extracting,
-                organizing,
-                graphing,
-                and exploring enterprise knowledge.
+                connecting,
+                searching,
+                analyzing,
+                and exploring organizational knowledge.
 
             </p>
 
@@ -85,11 +86,17 @@ export default function KnowledgeAcquisitionDepartment() {
             <div
                 style={{
                     display: "flex",
-                    gap: "10px",
                     flexWrap: "wrap",
+                    gap: "10px",
                     marginBottom: "20px"
                 }}
             >
+
+                <button
+                    onClick={() => setActiveTab("KNOWLEDGE")}
+                >
+                    Knowledge
+                </button>
 
                 <button
                     onClick={() => setActiveTab("DASHBOARD")}
